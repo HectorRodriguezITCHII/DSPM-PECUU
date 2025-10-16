@@ -15,38 +15,74 @@ class MainApp(ft.Container):
         self.menu = Menu(page)
         
         #vistas
-        "escaner_general": EscanerGeneral(page)
+        self.views = {
+            "escaner_general": EscanerGeneral(page),
+        }
         
+        #configurar eventos del menu
+        self.setup_menu_events()
         
+        #vista actual
+        self.current_view = self.views["escaner_general"]
         
+        #cuerpo principal
+        self.body = ft.Container(
+            expand=True,
+            content=ft.Row(
+                controls=[
+                    self.menu,
+                    self.current_view
+                ]
+            )
+        )
         
-
-'''def main(page: ft.Page):
-    page.bgcolor = ft.Colors.GREY_200
-    page.title = "Sistema de Gestión de Cámaras Ciudadanas"
-    page.padding = ft.padding.symmetric(20, 10)
-    page.vertical_alignment = ft.CrossAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        #diseño principal
+        self.page.add(ft.Column(
+            expand=True,
+            controls=[
+                self.header,
+                self.body
+            ]
+        ))
     
-    text_title, img_logo_white, bottom_bar = setup_ui(page)
-    
-    page.appbar = ft.AppBar(
-        leading=img_logo_white,
-        leading_width=150,
-        title=text_title,
-        center_title=False,
-        toolbar_height=60,
-        bgcolor=ft.Colors.BLUE_GREY_500,
-        elevation=8,
-        shadow_color=ft.Colors.BLACK38,
-        actions=[
-            ft.IconButton(ft.Icons.ACCOUNT_CIRCLE, icon_color=ft.Colors.WHITE, icon_size=30, tooltip="Usuarios"),
-            ft.IconButton(ft.Icons.SETTINGS, icon_color=ft.Colors.WHITE, icon_size=30, tooltip="Configuración")
-        ],
-    )
-    
-    page.add(
-        bottom_bar
-    )
-
-ft.app(target=main)'''
+    def setup_menu_events(self):
+        #configurar los eventos delos botones del menu
+        self.menu.inicio_btn.on_click = lambda e: self.change_view("inicio")
+        self.menu.escaner_general_btn.on_click = lambda e: self.change_view("escaner_general")
+        self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
+        self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
+        self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
+        
+    def change_view(self, view_name):
+        self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
+        if view_name == "inicio":
+            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_800
+            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+        elif view_name == "escaner_general":
+            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_800
+            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+        elif view_name == "escaner_local":
+            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_800
+            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+        elif view_name == "enlaces":
+            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_800
+            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+        elif view_name == "historial":
+            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.historial_btn.icon_color = ft.Colors.BLUE_800
+        
