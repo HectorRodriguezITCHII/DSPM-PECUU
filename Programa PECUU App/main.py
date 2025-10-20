@@ -52,37 +52,55 @@ class MainApp(ft.Container):
         self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
         self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
         self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
+        self.menu.ajustes_btn.on_click = lambda e: self.change_view("ajustes")
         
     def change_view(self, view_name):
         self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
         if view_name == "inicio":
-            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_800
-            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_900
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
         elif view_name == "escaner_general":
-            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_800
-            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_900
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
         elif view_name == "escaner_local":
-            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_800
-            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_900
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
         elif view_name == "enlaces":
-            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_800
-            self.menu.historial_btn.icon_color = ft.Colors.BLUE_400
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_900
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
         elif view_name == "historial":
-            self.menu.inicio_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.BLUE_400
-            self.menu.historial_btn.icon_color = ft.Colors.BLUE_800
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_900
+        elif view_name == "ajustes":
+            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
+            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
+        # Forzar actualización de UI
+        self.page.update()
+
+def main(page: ft.Page):
+    # Configurar directorio de assets para servir imágenes desde src/assets
+    page.assets_dir = "src/assets"
+    MainApp(page)
+
+if __name__ == "__main__":
+    # Ejecutar la app de Flet
+    ft.app(target=main)
         
