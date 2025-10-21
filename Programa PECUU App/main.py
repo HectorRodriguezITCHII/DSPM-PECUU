@@ -8,7 +8,6 @@ class MainApp(ft.Container):
         super().__init__(expand=True)
         self.page = page
         self.page.title = "Sistema de Gestión de Cámaras Ciudadanas"
-        self.page.bgcolor = ft.Colors.GREY_100
         
         #componentes
         self.header = Header(page)
@@ -29,6 +28,7 @@ class MainApp(ft.Container):
         self.body = ft.Container(
             expand=True,
             content=ft.Row(
+                vertical_alignment=ft.CrossAxisAlignment.STRETCH,
                 controls=[
                     self.menu,
                     self.current_view
@@ -56,7 +56,7 @@ class MainApp(ft.Container):
         
     def change_view(self, view_name):
         self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
-        
+
         # update menu icons/colors to show selected
         try:
             self.menu.set_selected(view_name)

@@ -8,7 +8,7 @@ class Menu(ft.Container):
         self.gradient = ft.LinearGradient(
             begin=ft.alignment.top_center,
             end=ft.alignment.bottom_center,
-            colors=[ft.Colors.INDIGO_50, ft.Colors.INDIGO_600],
+            colors=[ft.Colors.INDIGO_100, ft.Colors.INDIGO_600],
         )
 
         # guardar los iconos como atributos (inicialmente outlined cuando existe)
