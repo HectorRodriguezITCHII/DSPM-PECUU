@@ -56,42 +56,12 @@ class MainApp(ft.Container):
         
     def change_view(self, view_name):
         self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
-        if view_name == "inicio":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_900
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
-        elif view_name == "escaner_general":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_900
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
-        elif view_name == "escaner_local":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_900
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
-        elif view_name == "enlaces":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_900
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
-        elif view_name == "historial":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_900
-        elif view_name == "ajustes":
-            self.menu.inicio_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_general_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.escaner_local_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.enlaces_btn.icon_color = ft.Colors.INDIGO_400
-            self.menu.historial_btn.icon_color = ft.Colors.INDIGO_400
+        
+        # update menu icons/colors to show selected
+        try:
+            self.menu.set_selected(view_name)
+        except Exception:
+            pass
         # Forzar actualización de UI
         self.page.update()
 
