@@ -1,13 +1,16 @@
 import flet as ft
+import os
 from components.header import Header
 from components.menu import Menu
 from views.escaner_general import EscanerGeneral
+from views.escaner_local import EscanerLocal
 
 class MainApp(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__(expand=True)
         self.page = page
         self.page.title = "Sistema de Gestión de Cámaras Ciudadanas"
+        self.page.bgcolor = ft.Colors.WHITE
         
         #componentes
         self.header = Header(page)
@@ -16,6 +19,7 @@ class MainApp(ft.Container):
         #vistas
         self.views = {
             "escaner_general": EscanerGeneral(page),
+            "escaner_local": EscanerLocal(page),
         }
         
         #configurar eventos del menu
@@ -53,7 +57,8 @@ class MainApp(ft.Container):
         self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
         self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
         self.menu.ajustes_btn.on_click = lambda e: self.change_view("ajustes")
-        
+        self.header.usuarios_btn.on_click = lambda e: self.change_view("usuarios")
+
     def change_view(self, view_name):
         self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
 
@@ -67,7 +72,10 @@ class MainApp(ft.Container):
 
 def main(page: ft.Page):
     # Configurar directorio de assets para servir imágenes desde src/assets
-    page.assets_dir = "src/assets"
+    # Obtener la ruta absoluta del directorio donde está main.py
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    assets_path = os.path.join(base_dir, "src", "assets")
+    page.assets_dir = assets_path
     MainApp(page)
 
 if __name__ == "__main__":

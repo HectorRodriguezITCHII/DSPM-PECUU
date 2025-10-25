@@ -13,10 +13,10 @@ class Menu(ft.Container):
 
         # guardar los iconos como atributos (inicialmente outlined cuando existe)
         self.inicio_btn = ft.IconButton(icon=ft.Icons.HOME_OUTLINED, tooltip="Inicio", icon_color=ft.Colors.INDIGO_500)
-        self.escaner_general_btn = ft.IconButton(icon=ft.Icons.WIFI_TETHERING_OUTLINED, tooltip="Escaneo General", icon_color=ft.Colors.INDIGO_400)
-        self.escaner_local_btn = ft.IconButton(icon=ft.Icons.ROUTER_OUTLINED, tooltip="Escaneo Local", icon_color=ft.Colors.INDIGO_400)
-        self.enlaces_btn = ft.IconButton(icon=ft.Icons.HUB_OUTLINED, tooltip="Enlaces", icon_color=ft.Colors.INDIGO_400)
-        self.historial_btn = ft.IconButton(icon=ft.Icons.HISTORY_OUTLINED, tooltip="Historial", icon_color=ft.Colors.INDIGO_400)
+        self.escaner_general_btn = ft.IconButton(icon=ft.Icons.WIFI_TETHERING_OUTLINED, tooltip="Escaneo General", icon_color=ft.Colors.INDIGO_500)
+        self.escaner_local_btn = ft.IconButton(icon=ft.Icons.ROUTER_OUTLINED, tooltip="Escaneo Local", icon_color=ft.Colors.INDIGO_500)
+        self.enlaces_btn = ft.IconButton(icon=ft.Icons.HUB_OUTLINED, tooltip="Enlaces", icon_color=ft.Colors.INDIGO_500)
+        self.historial_btn = ft.IconButton(icon=ft.Icons.HISTORY_OUTLINED, tooltip="Historial", icon_color=ft.Colors.INDIGO_500)
         # Ajustes puede no tener variante outlined; mantener SETTINGS como fallback
         self.ajustes_btn = ft.IconButton(icon=ft.Icons.SETTINGS, tooltip="Ajustes", icon_color=ft.Colors.INDIGO_50)
 
@@ -74,8 +74,8 @@ class Menu(ft.Container):
             return getattr(ft.Icons, filled_name, icon_data)
 
         # default all to unselected color
-        default_color = ft.Colors.INDIGO_300
-        selected_color = ft.Colors.WHITE
+        default_color = ft.Colors.INDIGO_500
+        selected_color = ft.Colors.YELLOW
 
         # map view to the button object
         btn_map = {
@@ -84,7 +84,6 @@ class Menu(ft.Container):
             "escaner_local": self.escaner_local_btn,
             "enlaces": self.enlaces_btn,
             "historial": self.historial_btn,
-            "ajustes": self.ajustes_btn,
         }
 
         # iterate and set icon/color

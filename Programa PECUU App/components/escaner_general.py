@@ -224,7 +224,7 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
                 ft.Icon(name=ft.Icons.PERM_SCAN_WIFI, color=ft.Colors.RED_400),
                 ft.Text(f"{item['url']}", weight="bold", size=14, color=ft.Colors.GREY_800)
                 ]),
-                ft.Text(f"IP: {item['ip']}", size=12),
+                ft.Text(f"IP: {item['ip']}", size=12, color=ft.Colors.GREY_500),
             ]
             
             if 'error' in item:

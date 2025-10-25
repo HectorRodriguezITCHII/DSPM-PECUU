@@ -1,10 +1,11 @@
 import flet as ft
+from components.escaner_general import scan_urls_handler
 
 class EscanerGeneral(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__()
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        self.loading_indicator = ft.ProgressRing(width=30, height=30, stroke_width=4)
+        self.loading_indicator = ft.ProgressRing(width=30, height=30, stroke_width=4, color=ft.Colors.AMBER)
         self.status_text = ft.Text(value="", size=20)
         self.padding = ft.padding.all(20)
         self.expand = True
@@ -37,10 +38,19 @@ class EscanerGeneral(ft.Container):
             scroll=ft.ScrollMode.AUTO,
             controls=[
                 self._create_header(),
-                self.scan_button,
+                ft.Row(controls=[self.scan_button], alignment=ft.MainAxisAlignment.CENTER),
                 self.results_column,
                 self.loading_row
             ]
+        )
+
+        # Conectar botón al manejador de escaneo
+        self.scan_button.on_click = lambda e: scan_urls_handler(
+            e,
+            self.results_column,
+            self.loading_row,
+            self.scan_button,
+            page,
         )
     
     def _create_header(self):
