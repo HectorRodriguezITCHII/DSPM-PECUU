@@ -9,10 +9,16 @@ class EscanerLocal(ft.Container):
         self.status_text = ft.Text(value="", size=20)
         self.padding = ft.padding.all(20)
         self.expand = True
-        self.bgcolor = ft.Colors.GREY_100
+        self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
-        '''self.scan_button = ft.FilledButton(
+        self.info_text = ft.Text(
+            value="Información de la red:",
+            size=18,
+            color=ft.Colors.GREY_800,
+        )
+
+        self.scan_button = ft.FilledButton(
             text="ESCANEAR",
             width=200,
             height=50,
@@ -21,16 +27,11 @@ class EscanerLocal(ft.Container):
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=22, weight="bold")),
         )
 
-        self.results_column = ft.Column(
-            scroll=ft.ScrollMode.AUTO,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-
         self.loading_row = ft.Row(
             controls=[self.loading_indicator, self.status_text],
             alignment=ft.MainAxisAlignment.CENTER,
             visible=False
-        )'''
+        )
 
         self.content = ft.Column(
             expand=True,

@@ -5,13 +5,25 @@ class EscanerGeneral(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__()
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        self.loading_indicator = ft.ProgressRing(width=30, height=30, stroke_width=4, color=ft.Colors.AMBER)
-        self.status_text = ft.Text(value="", size=20)
         self.padding = ft.padding.all(20)
         self.expand = True
-        self.bgcolor = ft.Colors.GREY_100
+        self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
+        
+        # Elementos de la barra de carga
+        self.loading_indicator = ft.ProgressRing(
+            width=30, 
+            height=30, 
+            stroke_width=4, 
+            color=ft.Colors.AMBER
+        )
+        
+        self.status_text = ft.Text(
+            value="",
+            size=20
+        )
 
+        # Botón de escaneo
         self.scan_button = ft.FilledButton(
             text="ESCANEAR",
             width=200,
@@ -21,11 +33,13 @@ class EscanerGeneral(ft.Container):
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=22, weight="bold")),
         )
 
+        # Columna para mostrar resultados
         self.results_column = ft.Column(
             scroll=ft.ScrollMode.AUTO,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
 
+        # Row para mostrar el estado de carga
         self.loading_row = ft.Row(
             controls=[self.loading_indicator, self.status_text],
             alignment=ft.MainAxisAlignment.CENTER,

@@ -29,7 +29,7 @@ class Header(ft.Container):
                 ft.Text(
                     value="SISTEMA DE GESTIÓN DE CÁMARAS CIUDADANAS",
                     size=26,
-                    color=ft.Colors.INDIGO_500,
+                    color=ft.Colors.INDIGO_900,
                     weight="bold"
                 ),
                 self.usuarios_btn,

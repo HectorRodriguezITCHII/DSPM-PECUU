@@ -3,22 +3,55 @@ import flet as ft
 class Menu(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__(width=60, border_radius=10, padding=5)
-        # store page if needed for updates
         self.page = page
         self.gradient = ft.LinearGradient(
             begin=ft.alignment.top_center,
             end=ft.alignment.bottom_center,
-            colors=[ft.Colors.INDIGO_100, ft.Colors.INDIGO_600],
+            colors=[ft.Colors.INDIGO_100, ft.Colors.INDIGO_ACCENT_700],
         )
 
         # guardar los iconos como atributos (inicialmente outlined cuando existe)
-        self.inicio_btn = ft.IconButton(icon=ft.Icons.HOME_OUTLINED, tooltip="Inicio", icon_color=ft.Colors.INDIGO_500)
-        self.escaner_general_btn = ft.IconButton(icon=ft.Icons.WIFI_TETHERING_OUTLINED, tooltip="Escaneo General", icon_color=ft.Colors.INDIGO_500)
-        self.escaner_local_btn = ft.IconButton(icon=ft.Icons.ROUTER_OUTLINED, tooltip="Escaneo Local", icon_color=ft.Colors.INDIGO_500)
-        self.enlaces_btn = ft.IconButton(icon=ft.Icons.HUB_OUTLINED, tooltip="Enlaces", icon_color=ft.Colors.INDIGO_500)
-        self.historial_btn = ft.IconButton(icon=ft.Icons.HISTORY_OUTLINED, tooltip="Historial", icon_color=ft.Colors.INDIGO_500)
+        self.inicio_btn = ft.IconButton(
+            icon=ft.Icons.HOME_OUTLINED, 
+            tooltip="Inicio", 
+            icon_color=ft.Colors.INDIGO_500,
+            hover_color=ft.Colors.INDIGO_200
+        )
+        
+        self.escaner_general_btn = ft.IconButton(
+            icon=ft.Icons.WIFI_TETHERING_OUTLINED, 
+            tooltip="Escaneo General", 
+            icon_color=ft.Colors.INDIGO_500,
+            hover_color=ft.Colors.INDIGO_200
+        )
+        
+        self.escaner_local_btn = ft.IconButton(
+            icon=ft.Icons.ROUTER_OUTLINED, 
+            tooltip="Escaneo Local", 
+            icon_color=ft.Colors.INDIGO_500,
+            hover_color=ft.Colors.INDIGO_300
+        )
+        
+        self.enlaces_btn = ft.IconButton(
+            icon=ft.Icons.HUB_OUTLINED, 
+            tooltip="Enlaces", 
+            icon_color=ft.Colors.INDIGO_500,
+            hover_color=ft.Colors.INDIGO_300
+        )
+
+        self.historial_btn = ft.IconButton(
+            icon=ft.Icons.HISTORY_OUTLINED, 
+            tooltip="Historial", 
+            icon_color=ft.Colors.INDIGO_500,
+            hover_color=ft.Colors.INDIGO_300
+        )
         # Ajustes puede no tener variante outlined; mantener SETTINGS como fallback
-        self.ajustes_btn = ft.IconButton(icon=ft.Icons.SETTINGS, tooltip="Ajustes", icon_color=ft.Colors.INDIGO_50)
+        self.ajustes_btn = ft.IconButton(
+            icon=ft.Icons.SETTINGS, 
+            tooltip="Ajustes", 
+            icon_color=ft.Colors.INDIGO_50,
+            hover_color=ft.Colors.INDIGO_600
+        )
 
         # mapa explícito de iconos (outline, filled). Si la variante filled no existe, se usa el mismo icono.
         self._icon_map = {
@@ -56,13 +89,13 @@ class Menu(ft.Container):
 
         - view_name: nombre de la vista (ej: 'inicio', 'escaner_general', ...)
         """
-        # helper to switch icon if a filled version exists
+        # cambio de icono a filled si existe
         def filled_icon(icon_data):
             try:
-                # get the name of the icon constant, try to remove _OUTLINED
+                # obtiener el nombre del icono
                 name = icon_data.name
             except Exception:
-                # fallback: can't determine, return original
+                # fallback: no se puede determinar, devolver original
                 return icon_data
 
             if name.endswith("_OUTLINED"):
@@ -70,14 +103,14 @@ class Menu(ft.Container):
             else:
                 filled_name = name
 
-            # return the filled icon if it exists in ft.Icons, otherwise original
+            # devolver el icono filled si existe en ft.Icons, de lo contrario original
             return getattr(ft.Icons, filled_name, icon_data)
 
-        # default all to unselected color
+        # restablecer colores e iconos
         default_color = ft.Colors.INDIGO_500
         selected_color = ft.Colors.YELLOW
 
-        # map view to the button object
+        # mapear botones
         btn_map = {
             "inicio": self.inicio_btn,
             "escaner_general": self.escaner_general_btn,
@@ -86,15 +119,14 @@ class Menu(ft.Container):
             "historial": self.historial_btn,
         }
 
-        # iterate and set icon/color
+        # iterar botones y actualizar
         for name, btn in btn_map.items():
-            # set filled icon for selected, keep outlined/regular for others
+            # cambio de icono a filled si existe
             if name == view_name:
                 btn.icon = filled_icon(btn.icon)
                 btn.icon_color = selected_color
             else:
-                # restore to outlined if original had outlined in its name
-                # We attempt to find an outlined variant by appending _OUTLINED
+                # restablecer a outlined
                 try:
                     icon_name = btn.icon.name
                 except Exception:
@@ -106,11 +138,10 @@ class Menu(ft.Container):
 
                 btn.icon_color = default_color
 
-        # small UI refresh
+        # actualizar UI
         try:
             self.update()
         except Exception:
-            # if update not available, try to update page
             try:
                 if hasattr(self, "page"):
                     self.page.update()
