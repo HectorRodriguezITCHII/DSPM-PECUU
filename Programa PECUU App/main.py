@@ -6,29 +6,43 @@ from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
 
 class MainApp(ft.Container):
+    """
+    Clase principal que define la estructura y el comportamiento de la
+    interfaz de usuario de la aplicación.
+
+    Hereda de ft.Container para ocupar toda la página y gestiona el
+    Header, el Menú de navegación y las Vistas principales (Escaner).
+    """
     def __init__(self, page: ft.Page):
+        """
+        Inicializa la aplicación principal y configura la página de Flet.
+
+        :param page: El objeto ft.Page proporcionado por el framework Flet.
+        :type page: ft.Page
+        """
         super().__init__(expand=True)
         self.page = page
         self.page.title = "Sistema de Gestión de Cámaras Ciudadanas"
         self.page.bgcolor = ft.Colors.WHITE
         
-        #componentes
+        # Componentes de la interfaz
         self.header = Header(page)
         self.menu = Menu(page)
         
-        #vistas
+        # Vistas dinámicas de la aplicación
+        # Las instancias de las vistas son creadas aquí para ser reutilizadas.
         self.views = {
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
         }
         
-        #configurar eventos del menu
+        # Configurar los manejadores de eventos para los botones del menú
         self.setup_menu_events()
         
-        #vista actual
+        # Vista inicial al cargar la aplicación
         self.current_view = self.views["escaner_general"]
         
-        #cuerpo principal
+        # Cuerpo principal (Contenedor que alberga el Menú y la Vista actual)
         self.body = ft.Container(
             expand=True,
             content=ft.Row(
@@ -40,7 +54,7 @@ class MainApp(ft.Container):
             )
         )
         
-        #diseño principal
+        # Agregar el diseño final a la página de Flet (Header y Body)
         self.page.add(ft.Column(
             expand=True,
             controls=[
@@ -50,35 +64,74 @@ class MainApp(ft.Container):
         ))
     
     def setup_menu_events(self):
-        #configurar los eventos delos botones del menu
+        """
+        Asigna la función 'change_view' a los eventos 'on_click' de los 
+        botones del menú (tanto en 'Menu' como en 'Header').
+        
+        Nota: Se utilizan funciones lambda para pasar el nombre de la vista 
+        como argumento.
+        """
+        # Configurar eventos del menú lateral
         self.menu.inicio_btn.on_click = lambda e: self.change_view("inicio")
         self.menu.escaner_general_btn.on_click = lambda e: self.change_view("escaner_general")
         self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
         self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
         self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
         self.menu.ajustes_btn.on_click = lambda e: self.change_view("ajustes")
+        
+        # Configurar evento del botón de usuarios en el header
         self.header.usuarios_btn.on_click = lambda e: self.change_view("usuarios")
 
     def change_view(self, view_name):
-        self.body.content.controls[1] = self.views.get(view_name, ft.Text("Vista no disponible"))
+        """
+        Cambia la vista actual en el cuerpo principal de la aplicación.
+        
+        Si la vista no existe en 'self.views', muestra un mensaje de error.
 
-        # update menu icons/colors to show selected
+        :param view_name: Nombre (clave) de la vista a mostrar.
+        :type view_name: str
+        """
+        # Reemplaza el control en el índice 1 del ft.Row (la vista actual)
+        # con la nueva vista obtenida del diccionario 'self.views'.
+        self.body.content.controls[1] = self.views.get(
+            view_name, ft.Text("Vista no disponible")
+        )
+
+        # Actualizar el estado visual (ícono/color) del menú
         try:
             self.menu.set_selected(view_name)
         except Exception:
+            # Capturar excepciones si el nombre de la vista no corresponde 
+            # a un botón en el menú (ej. vista de "usuarios" o "inicio")
             pass
-        # Forzar actualización de UI
+        
+        # Forzar la actualización de la interfaz de usuario de Flet
         self.page.update()
 
 def main(page: ft.Page):
-    # Configurar directorio de assets para servir imágenes desde src/assets
-    # Obtener la ruta absoluta del directorio donde está main.py
+    """
+    Función principal de Flet que se ejecuta al iniciar la aplicación.
+    
+    Configura la ruta de los assets y lanza la instancia de MainApp.
+
+    :param page: El objeto ft.Page proporcionado por Flet.
+    :type page: ft.Page
+    """
+    # Obtener la ruta absoluta del directorio donde se ejecuta el script (main.py)
     base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Construir la ruta al directorio de assets (src/assets)
     assets_path = os.path.join(base_dir, "src", "assets")
     page.assets_dir = assets_path
+    
+    # Inicializar y correr la aplicación principal
     MainApp(page)
 
 if __name__ == "__main__":
+    """
+    Punto de entrada del script.
+    
+    Inicia la aplicación de Flet con la función 'main' como destino.
+    """
     # Ejecutar la app de Flet
     ft.app(target=main)
-        

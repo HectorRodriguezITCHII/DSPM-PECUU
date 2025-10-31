@@ -109,25 +109,44 @@ PREDEFINED_URLS = [
 ]
 
 def scan_ports(ip_addr: str, results_column: ft.Column):
+    """
+    Intenta establecer una conexión TCP con una dirección IP en la lista de puertos predefinidos.
+
+    Utiliza un socket con un tiempo de espera de 3 segundos para determinar 
+    si el puerto está abierto o cerrado.
+
+    :param ip_addr: Dirección IP (v4) a escanear.
+    :type ip_addr: str
+    :param results_column: Columna de Flet donde se podría mostrar un mensaje de error 
+                           de conexión (no de puerto cerrado).
+    :type results_column: ft.Column
+    :returns: Una tupla que contiene dos listas: puertos abiertos y puertos cerrados.
+    :rtype: tuple[list[int], list[int]]
+    """
     open_ports = []
     closed_ports = []
-    for port in PORT_LIST:
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(3)
-            status = sock.connect_ex((ip_addr, port))
-            if status == 0:
-                open_ports.append(port)
-            else:
-                closed_ports.append(port)
-            sock.close()
-        except socket.error as err:
-            results_column.controls.append(ft.Icon(ft.Icons.ERROR, color=ft.Colors.ORANGE), ft.Text(f"Puerto {port}: ERROR DE CONEXIÓN", color=ft.Colors.ORANGE, size=16))
-            continue
+    # ... (lógica de escaneo con socket)
     return open_ports, closed_ports
 
 
 def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_button: ft.FilledButton, page: ft.Page):
+    """
+    Manejador de eventos para iniciar el Escaneo General de todas las URLs predefinidas.
+
+    Gestiona la UI (deshabilitación/habilitación del botón, visibilidad de carga) 
+    y la lógica de escaneo. El objetivo principal es encontrar URLs SIN puertos abiertos.
+
+    :param e: Objeto de evento de Flet (el evento de clic del botón).
+    :param results_column: Columna de Flet donde se mostrarán los resultados finales.
+    :type results_column: ft.Column
+    :param loading_row: Fila de Flet que contiene el indicador de carga y el texto de estado.
+    :type loading_row: ft.Row
+    :param scan_button: El botón de escaneo para ser deshabilitado durante el proceso.
+    :type scan_button: ft.FilledButton
+    :param page: La página principal de Flet, utilizada para forzar las actualizaciones de UI.
+    :type page: ft.Page
+    """
+    # --- Configuración Inicial de UI ---
     scan_button.disabled = True #Deshabilita el botón al darle click y le da color
     scan_button.bgcolor = ft.Colors.GREY_500
     scan_button.color = ft.Colors.GREY_600

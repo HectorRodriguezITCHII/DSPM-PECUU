@@ -2,15 +2,32 @@ import flet as ft
 from components.escaner_local import NetworkScanner
 
 class EscanerLocal(ft.Container):
+    """
+    Representa la vista de "Escaneo Local" de la aplicación.
+    
+    Esta vista permite al usuario ver su información de red (IP LAN/WAN) 
+    e iniciar un escaneo de puertos, ya sea a su propia IP pública o 
+    a una IP personalizada ingresada en el campo de texto.
+
+    Hereda de ft.Container y se utiliza como un panel en la interfaz principal.
+    """
     def __init__(self, page: ft.Page):
+        """
+        Inicializa la vista, obtiene la información de red e instancia 
+        todos los componentes de la interfaz de Flet.
+
+        :param page: Objeto ft.Page de la aplicación principal.
+        :type page: ft.Page
+        """
         super().__init__()
+        # Configuración visual del contenedor principal de la vista
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.padding = ft.padding.all(20)
         self.expand = True
         self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
-        # Elementos de la barra de carga
+        # --- Indicadores de Carga y Estado ---
         self.loading_indicator = ft.ProgressRing(
             width=30, 
             height=30, 
@@ -23,7 +40,10 @@ class EscanerLocal(ft.Container):
             size=20
         )
         
-        # Información de red
+        # --- Inicialización del Escáner y Datos de Red ---
+        # Crea la instancia del motor de escaneo y obtiene las IPs al inicio.
+        self.scanner = NetworkScanner()
+
         self.info_text = ft.Text(
             value="INFORMACIÓN DE LA RED:",
             size=22,
@@ -31,22 +51,19 @@ class EscanerLocal(ft.Container):
             weight="bold"
         )
 
-        # crear instancia del scanner y obtener IPs
-        self.scanner = NetworkScanner()
-
         self.info_lan_text = ft.Text(
-            value="IP Local (LAN): " + (self.scanner.lan_ip or ""),
+            value="IP Local (LAN): " + (self.scanner.lan_ip or "N/D"),
             size=18,
             color=ft.Colors.GREY_700,
         )
 
         self.info_wan_text = ft.Text(
-            value="IP Pública (WAN): " + (self.scanner.wan_ip or ""),
+            value="IP Pública (WAN): " + (self.scanner.wan_ip or "N/D"),
             size=18,
             color=ft.Colors.GREY_700,
         )
 
-        #Contenedor de información de red
+        # Contenedor que agrupa la información de red
         self.info_container = ft.Container(
             padding=ft.padding.all(15),
             border_radius=10,
@@ -63,9 +80,10 @@ class EscanerLocal(ft.Container):
             )
         )
 
-        # Botón de escaneo
+        # --- Controles de Escaneo ---
+        # Botón para escanear la IP WAN obtenida automáticamente.
         self.scan_button = ft.FilledButton(
-            text="ESCANEAR " + (self.scanner.wan_ip or ""),
+            text="ESCANEAR " + (self.scanner.wan_ip or "IP PÚBLICA"),
             width=300,
             height=50,
             bgcolor=ft.Colors.INDIGO_500,
@@ -73,7 +91,7 @@ class EscanerLocal(ft.Container):
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=20, weight="bold")),
         )
 
-        # Campo de texto para ingresar IP personalizada
+        # Campo de texto para ingresar una IP de escaneo personalizada.
         self.ip_textfield = ft.TextField(
             width=240,
             height=50,
@@ -83,7 +101,7 @@ class EscanerLocal(ft.Container):
             border_radius=10
         )
 
-        # Botón para escanear IP personalizada
+        # Botón para iniciar escaneo de la IP ingresada.
         self.scan_ip_button = ft.IconButton(
             icon=ft.Icons.WIFI_TETHERING,
             icon_color=ft.Colors.WHITE,
@@ -92,7 +110,7 @@ class EscanerLocal(ft.Container):
             hover_color=ft.Colors.INDIGO_400
         )
 
-        # Fila para ingresar IP personalizada y escanearla
+        # Fila que contiene el campo de texto y el botón de escaneo de IP personalizada
         self.ingresar_ip_row = ft.Row(
             alignment=ft.MainAxisAlignment.CENTER,
             controls=[
@@ -101,7 +119,7 @@ class EscanerLocal(ft.Container):
             ]
         )
 
-        #Contenedor con botón y fila de ingreso de IP
+        # Contenedor que agrupa las opciones de escaneo
         self.buttons_container = ft.Container(
             margin=ft.margin.only(bottom=20),
             content=ft.Column(
@@ -111,20 +129,20 @@ class EscanerLocal(ft.Container):
             )
         )
 
-        # Fila de carga y estado
+        # Fila para mostrar el indicador de carga y el texto de estado (oculto por defecto)
         self.loading_row = ft.Row(
             controls=[self.loading_indicator, self.status_text],
             alignment=ft.MainAxisAlignment.CENTER,
             visible=False
         )
 
-        # Columna para resultados del escaneo
+        # Columna donde se mostrarán los resultados del escaneo (puertos abiertos)
         self.results_column = ft.Column(
             scroll=ft.ScrollMode.AUTO,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
 
-        # Contenedor principal
+        # --- Contenedor Principal (ft.Column) ---
         self.content = ft.Column(
             expand=True,
             alignment=ft.MainAxisAlignment.START,
@@ -135,6 +153,7 @@ class EscanerLocal(ft.Container):
                 self.info_container,
                 self.buttons_container,
                 self.loading_row,
+                # Contenedor visual para los resultados
                 ft.Container(
                     content=self.results_column,
                     width=300,
@@ -146,7 +165,8 @@ class EscanerLocal(ft.Container):
             ]
         )
 
-        # Conectar botón al manejador de escaneo usando kwargs para evitar reordenamiento accidental
+        # --- Conexión de Eventos de Escaneo ---
+        # Conexión del botón de escaneo principal (usa la IP WAN predeterminada)
         self.scan_button.on_click = lambda e: self.scanner.scan_ports(
             page=page,
             results_column=self.results_column,
@@ -156,8 +176,10 @@ class EscanerLocal(ft.Container):
             scan_ip_button=self.scan_ip_button
         )
         
+        # Conexión del botón de escaneo de IP personalizada
         self.scan_ip_button.on_click = lambda e: self.scanner.scan_ports(
-            target_ip=self.ip_textfield.value(),
+            # Pasa la IP ingresada como argumento 'target_ip'
+            target_ip=self.ip_textfield.value, 
             page=page,
             results_column=self.results_column,
             loading_row=self.loading_row,
@@ -167,6 +189,12 @@ class EscanerLocal(ft.Container):
         )
 
     def _create_header(self):
+        """
+        Crea y retorna el contenedor que actúa como cabecera o título de la vista.
+
+        :returns: Un objeto ft.Container que contiene el título con icono de router.
+        :rtype: ft.Container
+        """
         return ft.Container(
             padding=ft.padding.only(bottom=20),
             content=ft.Column(
