@@ -26,8 +26,8 @@ class EscanerGeneral(ft.Container):
         # Botón de escaneo
         self.scan_button = ft.FilledButton(
             text="ESCANEAR",
-            width=200,
-            height=50,
+            width=150,
+            height=150,
             bgcolor=ft.Colors.INDIGO_500,
             color=ft.Colors.WHITE,
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=22, weight="bold")),
@@ -48,11 +48,12 @@ class EscanerGeneral(ft.Container):
 
         self.content = ft.Column(
             expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             alignment=ft.MainAxisAlignment.START,
             scroll=ft.ScrollMode.AUTO,
             controls=[
                 self._create_header(),
-                ft.Row(controls=[self.scan_button], alignment=ft.MainAxisAlignment.CENTER),
+                self.scan_button,
                 self.results_column,
                 self.loading_row
             ]

@@ -108,7 +108,7 @@ PREDEFINED_URLS = [
     "driveinnlahacienda.ddnsgroup.com", "abarrotes34.ddnsgroup.com"
 ]
 
-def scan_ports(ip_addr: str):
+def scan_ports(ip_addr: str, results_column: ft.Column):
     open_ports = []
     closed_ports = []
     for port in PORT_LIST:
@@ -122,7 +122,7 @@ def scan_ports(ip_addr: str):
                 closed_ports.append(port)
             sock.close()
         except socket.error as err:
-            print(f"Error al conectar a {ip_addr}:{port} - {err}")
+            results_column.controls.append(ft.Icon(ft.Icons.ERROR, color=ft.Colors.ORANGE), ft.Text(f"Puerto {port}: ERROR DE CONEXIÓN", color=ft.Colors.ORANGE, size=16))
             continue
     return open_ports, closed_ports
 
