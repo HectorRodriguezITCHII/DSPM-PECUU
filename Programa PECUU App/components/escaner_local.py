@@ -116,16 +116,20 @@ class NetworkScanner:
             scan_button.disabled = False
             scan_button.bgcolor = ft.Colors.INDIGO_700
             scan_button.color = ft.Colors.WHITE
+            
         if loading_row is not None:
             loading_row.visible = False
+            
         if ip_textfield is not None:
             ip_textfield.disabled = False
             ip_textfield.bgcolor = ft.Colors.WHITE
             ip_textfield.color = ft.Colors.GREY_700
+            
         if scan_ip_button is not None:
             scan_ip_button.disabled = False
             scan_ip_button.bgcolor = ft.Colors.INDIGO_500
             scan_ip_button.icon_color = ft.Colors.WHITE
+            
         if page and hasattr(page, "update"):
             page.update()
 

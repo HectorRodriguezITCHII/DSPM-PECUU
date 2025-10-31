@@ -162,7 +162,7 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
     for url in urls:
         try:
             ip_addr = socket.gethostbyname(url)
-            open_ports, closed_ports = scan_ports(ip_addr)
+            open_ports, closed_ports = scan_ports(ip_addr, results_column)
             total_scanned += 1
             
             # Solo agregamos las URLs que NO tienen puertos abiertos

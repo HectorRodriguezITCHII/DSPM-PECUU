@@ -70,14 +70,14 @@ class EscanerLocal(ft.Container):
             height=50,
             bgcolor=ft.Colors.INDIGO_500,
             color=ft.Colors.WHITE,
-            style=ft.ButtonStyle(text_style=ft.TextStyle(size=22, weight="bold")),
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20, weight="bold")),
         )
 
         # Campo de texto para ingresar IP personalizada
         self.ip_textfield = ft.TextField(
             width=240,
             height=50,
-            hint_text="O escanear una IP...",
+            hint_text="O escanear otra IP...",
             text_style=ft.TextStyle(size=16, color=ft.Colors.GREY_700),
             border_color=ft.Colors.GREY_300,
             border_radius=10
@@ -155,7 +155,17 @@ class EscanerLocal(ft.Container):
             ip_textfield=self.ip_textfield,
             scan_ip_button=self.scan_ip_button
         )
-    
+        
+        self.scan_ip_button.on_click = lambda e: self.scanner.scan_ports(
+            target_ip=self.ip_textfield.value(),
+            page=page,
+            results_column=self.results_column,
+            loading_row=self.loading_row,
+            scan_button=self.scan_button,
+            ip_textfield=self.ip_textfield,
+            scan_ip_button=self.scan_ip_button
+        )
+
     def _create_header(self):
         return ft.Container(
             padding=ft.padding.only(bottom=20),
