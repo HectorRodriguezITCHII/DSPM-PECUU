@@ -16,15 +16,7 @@ class Header(ft.Container):
         :param page: El objeto ft.Page de la aplicación principal.
         :type page: ft.Page
         """
-        super().__init__(height=60)
-        
-        # --- Botón de Usuario ---
-        self.usuarios_btn = ft.IconButton(
-            icon=ft.Icons.ACCOUNT_CIRCLE,
-            icon_color=ft.Colors.INDIGO_500,
-            icon_size=40,
-            tooltip="Usuarios"
-        )
+        super().__init__(height=50)
         
         # --- Lógica de Carga del Logo ---
         # Obtener la ruta absoluta: Asume que la estructura es project_root/src/components/header.py
@@ -56,7 +48,7 @@ class Header(ft.Container):
                 self.img_logo_dspm,
                 ft.Text(
                     value="SISTEMA DE GESTIÓN DE CÁMARAS CIUDADANAS",
-                    size=26,
+                    size=24,
                     color=ft.Colors.INDIGO_900,
                     weight="bold"
                 ),

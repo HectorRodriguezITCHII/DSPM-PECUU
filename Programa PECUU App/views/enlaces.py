@@ -1,4 +1,5 @@
 import flet as ft
+from components.inner_header import InnerHeader
 
 class Enlaces(ft.Container):
     """
@@ -22,6 +23,71 @@ class Enlaces(ft.Container):
         self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
+
+        # --- Botones de Acción ---
+        self.inspect_button = ft.IconButton(
+            icon=ft.Icons.VISIBILITY,
+            icon_color=ft.Colors.INDIGO_ACCENT_400,
+            tooltip="Inspeccionar"
+        )
+        
+        # --- Estilo de Texto para las Celdas de la Tabla ---
+        self.text_style = ft.TextStyle(
+            size=14,
+            color=ft.Colors.GREY_800
+        )
+
+        # --- Tabla de Datos (ft.DataTable) ---
+        self.data_table = ft.DataTable(
+            expand=True,
+            horizontal_lines=ft.border.BorderSide(1, color=ft.Colors.GREY_300),
+            columns=[
+                ft.DataColumn(ft.Text(""), ),
+                ft.DataColumn(ft.Text("Nombre", style=self.text_style)),
+                ft.DataColumn(ft.Text("DDNS", style=self.text_style)),
+                ft.DataColumn(ft.Text("Puerto HTTP", style=self.text_style), numeric=True),
+                ft.DataColumn(ft.Text("Puerto RSTP", style=self.text_style), numeric=True),
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(self.inspect_button),
+                        ft.DataCell(ft.Text("Escuela Pública", style=self.text_style)),
+                        ft.DataCell(ft.Text("Escuela1.ddns.net", style=self.text_style)),
+                        ft.DataCell(ft.Text("80", style=self.text_style)),
+                        ft.DataCell(ft.Text("554", style=self.text_style)),
+                    ],
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(self.inspect_button),
+                        ft.DataCell(ft.Text("Plaza Central", style=self.text_style)),
+                        ft.DataCell(ft.Text("PlazaCentral.ddns.net", style=self.text_style)),
+                        ft.DataCell(ft.Text("80", style=self.text_style)),
+                        ft.DataCell(ft.Text("1024", style=self.text_style)),
+                    ],
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(self.inspect_button),
+                        ft.DataCell(ft.Text("Parque Norte", style=self.text_style)),
+                        ft.DataCell(ft.Text("ParqueNorte.ddns.net", style=self.text_style)),
+                        ft.DataCell(ft.Text("81", style=self.text_style)),
+                        ft.DataCell(ft.Text("1024", style=self.text_style)),
+                    ],
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(self.inspect_button),
+                        ft.DataCell(ft.Text("Fraccionamiento", style=self.text_style)),
+                        ft.DataCell(ft.Text("Fraccionamiento.ddns.net", style=self.text_style)),
+                        ft.DataCell(ft.Text("82", style=self.text_style)),
+                        ft.DataCell(ft.Text("1024", style=self.text_style)),
+                    ],
+                ),
+            ],
+        )
+
         # --- Estructura Principal del Contenido (ft.Column) ---
         self.content = ft.Column(
             expand=True,
@@ -29,35 +95,11 @@ class Enlaces(ft.Container):
             alignment=ft.MainAxisAlignment.START,
             scroll=ft.ScrollMode.AUTO,
             controls=[
-                self._create_header(),
+                InnerHeader("ENLACES", icon=ft.Icons.HUB),
+                # La tabla de datos dentro de una fila para que
+                # pueda abarcar toda la pantalla horizontalmente
+                ft.Row(
+                    controls=[self.data_table]
+                )
             ]
-        )
-
-    def _create_header(self):
-        """
-        Crea y retorna el contenedor que actúa como cabecera o título de la vista.
-
-        :returns: Un objeto ft.Container que contiene el título y un divisor.
-        :rtype: ft.Container
-        """
-        return ft.Container(
-            padding=ft.padding.only(bottom=20),
-            content=ft.Column(
-                spacing=5,
-                controls=[
-                    ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.HUB, size=30, color=ft.Colors.AMBER),
-                            ft.Text(
-                                value="ENLACES",
-                                size=26,
-                                color=ft.Colors.INDIGO_500,
-                                weight="bold"
-                            )
-                        ],
-                        spacing=10
-                    ),
-                    ft.Divider(height=10, color=ft.Colors.GREY_300)
-                ]
-            )
         )
