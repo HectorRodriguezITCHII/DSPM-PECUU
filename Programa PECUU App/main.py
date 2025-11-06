@@ -2,8 +2,12 @@ import flet as ft
 import os
 from components.header import Header
 from components.menu import Menu
+from views.inicio import Inicio
 from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
+from views.enlaces import Enlaces
+from views.logs import Logs
+from views.usuarios import Usuarios
 
 class MainApp(ft.Container):
     """
@@ -32,15 +36,19 @@ class MainApp(ft.Container):
         # Vistas dinámicas de la aplicación
         # Las instancias de las vistas son creadas aquí para ser reutilizadas.
         self.views = {
+            "inicio": Inicio(page),
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
+            "enlaces": Enlaces(page),
+            "historial": Logs(page),
+            "usuarios": Usuarios(page),
         }
         
         # Configurar los manejadores de eventos para los botones del menú
         self.setup_menu_events()
         
         # Vista inicial al cargar la aplicación
-        self.current_view = self.views["escaner_general"]
+        self.current_view = self.views["inicio"]
         
         # Cuerpo principal (Contenedor que alberga el Menú y la Vista actual)
         self.body = ft.Container(
@@ -77,10 +85,7 @@ class MainApp(ft.Container):
         self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
         self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
         self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
-        self.menu.ajustes_btn.on_click = lambda e: self.change_view("ajustes")
-        
-        # Configurar evento del botón de usuarios en el header
-        self.header.usuarios_btn.on_click = lambda e: self.change_view("usuarios")
+        self.menu.usuarios_btn.on_click = lambda e: self.change_view("usuarios")
 
     def change_view(self, view_name):
         """

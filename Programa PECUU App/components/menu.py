@@ -30,9 +30,9 @@ class Menu(ft.Container):
         # Se definen todos los botones como atributos para ser accedidos externamente 
         # (ej. para asignar eventos on_click en MainApp).
         self.inicio_btn = ft.IconButton(
-            icon=ft.Icons.HOME_OUTLINED, 
+            icon=ft.Icons.HOME, 
             tooltip="Inicio", 
-            icon_color=ft.Colors.INDIGO_500,
+            icon_color=ft.Colors.YELLOW_100,
             hover_color=ft.Colors.INDIGO_200
         )
         
@@ -64,12 +64,12 @@ class Menu(ft.Container):
             hover_color=ft.Colors.INDIGO_300
         )
         
-        # Botón de Ajustes (icon_color diferente para destacarlo como acción secundaria)
-        self.ajustes_btn = ft.IconButton(
-            icon=ft.Icons.SETTINGS, 
-            tooltip="Ajustes", 
-            icon_color=ft.Colors.INDIGO_50,
-            hover_color=ft.Colors.INDIGO_600
+        # Botón de Usuario (icon_color diferente para destacarlo como acción secundaria)
+        self.usuarios_btn = ft.IconButton(
+            icon=ft.Icons.ACCOUNT_CIRCLE,
+            icon_color=ft.Colors.WHITE,
+            hover_color=ft.Colors.INDIGO_500,
+            tooltip="Usuarios"
         )
 
         # --- Mapa de Iconos (Gestión de Estado) ---
@@ -82,7 +82,7 @@ class Menu(ft.Container):
             "escaner_local": (ft.Icons.ROUTER_OUTLINED, getattr(ft.Icons, "ROUTER", ft.Icons.ROUTER_OUTLINED)),
             "enlaces": (ft.Icons.HUB_OUTLINED, getattr(ft.Icons, "HUB", ft.Icons.HUB_OUTLINED)),
             "historial": (ft.Icons.HISTORY_OUTLINED, getattr(ft.Icons, "HISTORY", ft.Icons.HISTORY_OUTLINED)),
-            "ajustes": (ft.Icons.SETTINGS, getattr(ft.Icons, "SETTINGS", ft.Icons.SETTINGS)),
+            "usuarios": (ft.Icons.ACCOUNT_CIRCLE_OUTLINED, getattr(ft.Icons, "ACCOUNT_CIRCLE", ft.Icons.ACCOUNT_CIRCLE_OUTLINED)),
         }
 
         # --- Estructura del Contenido ---
@@ -100,9 +100,9 @@ class Menu(ft.Container):
                         self.historial_btn,
                     ]
                 ),
-                ft.Column( # Grupo inferior (Ajustes)
+                ft.Column( # Grupo inferior (Usuarios)
                     controls=[
-                        self.ajustes_btn,
+                        self.usuarios_btn,
                     ]
                 ),
             ]
@@ -144,9 +144,6 @@ class Menu(ft.Container):
             "escaner_local": self.escaner_local_btn,
             "enlaces": self.enlaces_btn,
             "historial": self.historial_btn,
-            # NOTA: El botón 'ajustes' no está en el bucle ya que su color 
-            # de ícono es INDIGO_50 (diferente al default) y su ícono 
-            # no tiene variante OUTLINED/FILLED.
         }
 
         # Iterar sobre los botones principales y actualizar su estado

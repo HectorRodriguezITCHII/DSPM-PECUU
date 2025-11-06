@@ -32,11 +32,19 @@ class Header(ft.Container):
         # os.path.dirname(__file__) -> components/
         # os.path.dirname(os.path.dirname(__file__)) -> project_root/
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        logo_path = os.path.join(base_dir, "src", "assets", "dspm-logo.png")
+        logo_dspm_path = os.path.join(base_dir, "src", "assets", "dspm-logo.png")
+        logo_cuu_path = os.path.join(base_dir, "src", "assets", "logo-cuu.png")
+
         
-        self.img_logo = ft.Image(
-            src=logo_path,
+        self.img_logo_dspm = ft.Image(
+            src=logo_dspm_path,
             tooltip="Logo de DSPM",
+            fit=ft.ImageFit.CONTAIN,
+        )
+
+        self.img_logo_cuu = ft.Image(
+            src=logo_cuu_path,
+            tooltip="Logo del Municipio de Chihuahua",
             fit=ft.ImageFit.CONTAIN,
         )
         
@@ -45,13 +53,13 @@ class Header(ft.Container):
         self.content = ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN, # Distribuye los elementos en los extremos
             controls=[
-                self.img_logo,
+                self.img_logo_dspm,
                 ft.Text(
                     value="SISTEMA DE GESTIÓN DE CÁMARAS CIUDADANAS",
                     size=26,
                     color=ft.Colors.INDIGO_900,
                     weight="bold"
                 ),
-                self.usuarios_btn,
+                self.img_logo_cuu,
             ]
         )
