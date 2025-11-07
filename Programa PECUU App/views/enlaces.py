@@ -23,6 +23,12 @@ class Enlaces(ft.Container):
         self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
+        self.add_button = ft.FloatingActionButton(
+            icon=ft.Icons.ADD,
+            bgcolor=ft.Colors.INDIGO_500,
+            foreground_color=ft.Colors.WHITE,
+            tooltip="Agregar"
+        )
 
         # --- Botones de Acción ---
         self.inspect_button = ft.IconButton(
@@ -100,6 +106,7 @@ class Enlaces(ft.Container):
                 # pueda abarcar toda la pantalla horizontalmente
                 ft.Row(
                     controls=[self.data_table]
-                )
+                ),
+                
             ]
         )
