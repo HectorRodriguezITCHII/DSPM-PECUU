@@ -27,7 +27,33 @@ class Usuarios(ft.Container):
         self.user_firstname = ft.Text("[Nombre]", size=16, color=ft.Colors.GREY_800)
         self.user_lastname = ft.Text("[Apellido]", size=16, color=ft.Colors.GREY_800)
         self.user_id = ft.Text("ID: [000000]", size=16, color=ft.Colors.GREY_800)
-        self.edit_button = ft.ElevatedButton("Editar Usuario", icon=ft.Icons.EDIT)
+
+        self.edit_button = ft.ElevatedButton(
+            "Editar", 
+            icon=ft.Icons.EDIT, 
+            color=ft.Colors.INDIGO_500,
+            width=120,
+            height=40,
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20))
+        )
+
+        self.logout_button = ft.ElevatedButton(
+            "CERRAR SESIÓN", 
+            bgcolor=ft.Colors.INDIGO_500, 
+            color=ft.Colors.WHITE,
+            width=200,
+            height=40,
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20, weight="bold"))
+        )
+
+        self.buttons_row = ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=20,
+            controls=[
+                self.edit_button,
+                self.logout_button
+            ]
+        )
 
         # --- Estructura Principal del Contenido (ft.Column) ---
         self.content = ft.Column(
@@ -61,6 +87,7 @@ class Usuarios(ft.Container):
                         ]
                     )]
                 ),
-                self.edit_button
+                ft.Container(height=20),  # Espaciado vertical
+                self.buttons_row
             ]
         )
