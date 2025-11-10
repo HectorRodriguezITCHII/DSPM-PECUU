@@ -23,11 +23,24 @@ class Enlaces(ft.Container):
         self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
-        self.add_button = ft.FloatingActionButton(
-            icon=ft.Icons.ADD,
+        self.add_button = ft.FilledButton(
+            "Añadir", 
+            icon=ft.Icons.ADD, 
             bgcolor=ft.Colors.INDIGO_500,
-            foreground_color=ft.Colors.WHITE,
-            tooltip="Agregar"
+            color=ft.Colors.WHITE,
+            width=150,
+            height=50,
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30)
+        )
+
+        self.delete_button = ft.FilledButton(
+            "Eliminar", 
+            icon=ft.Icons.DELETE, 
+            bgcolor=ft.Colors.RED_500,
+            color=ft.Colors.WHITE,
+            width=150,
+            height=50,
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30)
         )
 
         # --- Botones de Acción ---
@@ -104,6 +117,11 @@ class Enlaces(ft.Container):
                 InnerHeader("ENLACES", icon=ft.Icons.HUB),
                 # La tabla de datos dentro de una fila para que
                 # pueda abarcar toda la pantalla horizontalmente
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=20,
+                    controls=[self.add_button, self.delete_button]
+                ),
                 ft.Row(
                     controls=[self.data_table]
                 ),
