@@ -29,9 +29,9 @@ class Menu(ft.Container):
         # --- Definición de Botones de Navegación ---
         # Se definen todos los botones como atributos para ser accedidos externamente 
         # (ej. para asignar eventos on_click en MainApp).
-        self.inicio_btn = ft.IconButton(
+        self.actividades_btn = ft.IconButton(
             icon=ft.Icons.HOME, 
-            tooltip="Inicio", 
+            tooltip="Actividades", 
             icon_color=ft.Colors.YELLOW_100,
             hover_color=ft.Colors.INDIGO_200
         )
@@ -77,7 +77,7 @@ class Menu(ft.Container):
         self._icon_map = {
             # El uso de getattr(ft.Icons, "NOMBRE", FALLBACK) permite manejar 
             # casos donde no existe la variante 'filled' del icono.
-            "inicio": (ft.Icons.HOME_OUTLINED, getattr(ft.Icons, "HOME", ft.Icons.HOME_OUTLINED)),
+            "actividades": (ft.Icons.HOME_OUTLINED, getattr(ft.Icons, "HOME", ft.Icons.HOME_OUTLINED)),
             "escaner_general": (ft.Icons.WIFI_TETHERING_OUTLINED, getattr(ft.Icons, "WIFI_TETHERING", ft.Icons.WIFI_TETHERING_OUTLINED)),
             "escaner_local": (ft.Icons.ROUTER_OUTLINED, getattr(ft.Icons, "ROUTER", ft.Icons.ROUTER_OUTLINED)),
             "enlaces": (ft.Icons.HUB_OUTLINED, getattr(ft.Icons, "HUB", ft.Icons.HUB_OUTLINED)),
@@ -93,7 +93,7 @@ class Menu(ft.Container):
             controls=[
                 ft.Column( # Grupo superior de navegación
                     controls=[
-                        self.inicio_btn,
+                        self.actividades_btn,
                         self.escaner_general_btn,
                         self.escaner_local_btn,
                         self.enlaces_btn,
@@ -139,7 +139,7 @@ class Menu(ft.Container):
 
         # Mapeo de nombres de vista a objetos de botón para fácil iteración
         btn_map = {
-            "inicio": self.inicio_btn,
+            "actividades": self.actividades_btn,
             "escaner_general": self.escaner_general_btn,
             "escaner_local": self.escaner_local_btn,
             "enlaces": self.enlaces_btn,

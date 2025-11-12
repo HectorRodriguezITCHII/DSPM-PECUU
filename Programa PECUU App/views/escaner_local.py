@@ -112,7 +112,7 @@ class EscanerLocal(ft.Container):
         )
 
         # Fila que contiene el campo de texto y el botón de escaneo de IP personalizada
-        self.ingresar_ip_row = ft.Row(
+        self.input_ip_row = ft.Row(
             alignment=ft.MainAxisAlignment.CENTER,
             controls=[
                 self.ip_textfield,
@@ -126,7 +126,7 @@ class EscanerLocal(ft.Container):
             content=ft.Column(
                 alignment=ft.MainAxisAlignment.START,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                controls=[self.scan_button, self.ingresar_ip_row]
+                controls=[self.scan_button, self.input_ip_row]
             )
         )
 

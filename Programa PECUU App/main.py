@@ -2,7 +2,7 @@ import flet as ft
 import os
 from components.header import Header
 from components.menu import Menu
-from views.inicio import Inicio
+from views.actividades import Actividades
 from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
 from views.enlaces import Enlaces
@@ -36,7 +36,7 @@ class MainApp(ft.Container):
         # Vistas dinámicas de la aplicación
         # Las instancias de las vistas son creadas aquí para ser reutilizadas.
         self.views = {
-            "inicio": Inicio(page),
+            "actividades": Actividades(page),
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
             "enlaces": Enlaces(page),
@@ -48,7 +48,7 @@ class MainApp(ft.Container):
         self.setup_menu_events()
         
         # Vista inicial al cargar la aplicación
-        self.current_view = self.views["inicio"]
+        self.current_view = self.views["actividades"]
         
         # Cuerpo principal (Contenedor que alberga el Menú y la Vista actual)
         self.body = ft.Container(
@@ -80,7 +80,7 @@ class MainApp(ft.Container):
         como argumento.
         """
         # Configurar eventos del menú lateral
-        self.menu.inicio_btn.on_click = lambda e: self.change_view("inicio")
+        self.menu.actividades_btn.on_click = lambda e: self.change_view("actividades")
         self.menu.escaner_general_btn.on_click = lambda e: self.change_view("escaner_general")
         self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
         self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
@@ -106,8 +106,8 @@ class MainApp(ft.Container):
         try:
             self.menu.set_selected(view_name)
         except Exception:
-            # Capturar excepciones si el nombre de la vista no corresponde 
-            # a un botón en el menú (ej. vista de "usuarios" o "inicio")
+            # Capturar excepciones si el nombre de la vista no corresponde
+            # a un botón en el menú (ej. vista de "usuarios" o "actividades")
             pass
         
         # Forzar la actualización de la interfaz de usuario de Flet

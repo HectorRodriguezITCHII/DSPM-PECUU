@@ -1,11 +1,11 @@
 import flet as ft
 from components.inner_header import InnerHeader
 
-class Inicio(ft.Container):
+class Actividades(ft.Container):
     """
-    Representa la vista de "Inicio" de la aplicación.
-    
-    Hereda de ft.Container y se configura para ocupar toda el área de contenido 
+    Representa la vista de "Actividades" de la aplicación.
+
+    Hereda de ft.Container y se configura para ocupar toda el área de contenido
     principal de la aplicación.
     """
     def __init__(self, page: ft.Page):
@@ -27,22 +27,29 @@ class Inicio(ft.Container):
             content=ft.Container(
                 content=ft.Column([
                     ft.ListTile(
-                        leading=ft.Icon(ft.Icons.ASSIGNMENT),
-                        title=ft.Text("Actividad de hoy", weight="bold", size=20),
-                        subtitle=ft.Text(
-                            "Descripción de la actividad."
-                        ),
-                        bgcolor=ft.Colors.GREY_400,
+                        leading=ft.Icon(ft.Icons.ASSIGNMENT, ft.Colors.INDIGO_ACCENT_400),
+                        title=ft.Text("Actividad de hoy", weight="bold", size=20, color=ft.Colors.GREY_800),
+                        subtitle=ft.Text("[Usuario]", color=ft.Colors.GREY_600),
+                        trailing=ft.Text("12:00 PM", color=ft.Colors.GREY_600),
                     ),
+                    ft.Text("Descripción de la actividad.", color=ft.Colors.GREY_600),
                     ft.Row(
-                        [ft.IconButton(ft.Icons.EDIT, icon_color=ft.Colors.INDIGO_ACCENT), ft.IconButton(ft.Icons.CHECK, icon_color=ft.Colors.GREEN)],
                         alignment=ft.MainAxisAlignment.END,
-                    )]
-                ),
+                        controls=[
+                        ft.IconButton(ft.Icons.CHECK, icon_color=ft.Colors.GREEN),
+                        ft.PopupMenuButton(items=[
+                            ft.PopupMenuItem(text="Editar"),
+                            ft.PopupMenuItem(text="Eliminar"),
+                        ],
+                        tooltip="Opciones",
+                        )
+                    ]),
+                ]),
                 width=400,
                 padding=10,
-            ),
-            shadow_color=ft.Colors.ON_SURFACE_VARIANT,
+                bgcolor=ft.Colors.GREY_200,
+                border_radius=10,
+            )
         )
 
         # --- Estructura Principal del Contenido (ft.Column) ---
@@ -53,6 +60,6 @@ class Inicio(ft.Container):
             scroll=ft.ScrollMode.AUTO,
             controls=[
                 InnerHeader("ACTIVIDADES", icon=ft.Icons.HOME),
-                self.activity_card,
+                self.activity_card, 
             ]
         )

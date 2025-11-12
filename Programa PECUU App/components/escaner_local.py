@@ -59,8 +59,7 @@ class NetworkScanner:
             wan_ip = urllib.request.urlopen(wan_url).read().decode('utf8')
             return wan_ip
         except Exception as e:
-            print(f"Error al obtener la IP pública: {e}")
-            return None
+            return ft.Text(f"Error al obtener IP pública: {e}")
     
     def scan_ports(self, target_ip=None, port_list=None, page=None, results_column=None, loading_row=None, scan_button=None, ip_textfield=None, scan_ip_button=None):
         """
