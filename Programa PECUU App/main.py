@@ -6,6 +6,7 @@ from views.actividades import Actividades
 from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
 from views.enlaces import Enlaces
+from views.enlaces_añadir import EnlacesAñadir
 from views.logs import Logs
 from views.usuarios import Usuarios
 
@@ -39,7 +40,8 @@ class MainApp(ft.Container):
             "actividades": Actividades(page),
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
-            "enlaces": Enlaces(page),
+            "enlaces": Enlaces(page, self.change_view),
+            "enlaces_añadir": EnlacesAñadir(page, self.change_view),
             "historial": Logs(page),
             "usuarios": Usuarios(page),
         }

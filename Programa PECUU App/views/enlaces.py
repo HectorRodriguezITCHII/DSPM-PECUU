@@ -1,5 +1,6 @@
 import flet as ft
 from components.inner_header import InnerHeader
+from views.enlaces_añadir import EnlacesAñadir
 
 class Enlaces(ft.Container):
     """
@@ -8,14 +9,18 @@ class Enlaces(ft.Container):
     Hereda de ft.Container y se configura para ocupar toda el área de contenido
     principal de la aplicación.
     """
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, change_view=None):
         """
         Inicializa la vista y configura todos los componentes de la interfaz.
 
         :param page: Objeto ft.Page de la aplicación principal.
         :type page: ft.Page
+        :param change_view: Función callback para cambiar de vista.
+        :type change_view: callable
         """
         super().__init__()
+        self.page = page
+        self.change_view = change_view
         # Configuración del contenedor principal de la vista
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.padding = ft.padding.all(20)
@@ -30,7 +35,8 @@ class Enlaces(ft.Container):
             color=ft.Colors.WHITE,
             width=150,
             height=50,
-            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30)
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30),
+            on_click=lambda e: self.change_view("enlaces_añadir") if self.change_view else None
         )
 
         self.delete_button = ft.FilledButton(
@@ -65,7 +71,7 @@ class Enlaces(ft.Container):
                 ft.DataColumn(ft.Text("Nombre", style=self.text_style)),
                 ft.DataColumn(ft.Text("DDNS", style=self.text_style)),
                 ft.DataColumn(ft.Text("Puerto HTTP", style=self.text_style), numeric=True),
-                ft.DataColumn(ft.Text("Puerto RSTP", style=self.text_style), numeric=True),
+                ft.DataColumn(ft.Text("Puerto RTSP", style=self.text_style), numeric=True),
             ],
             rows=[
                 ft.DataRow(

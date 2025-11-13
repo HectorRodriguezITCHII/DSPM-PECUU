@@ -24,13 +24,14 @@ class Actividades(ft.Container):
         self.border_radius = 10
 
         self.activity_card = ft.Card(
+            width=600,
             content=ft.Container(
                 content=ft.Column([
                     ft.ListTile(
                         leading=ft.Icon(ft.Icons.ASSIGNMENT, ft.Colors.INDIGO_ACCENT_400),
                         title=ft.Text("Actividad de hoy", weight="bold", size=20, color=ft.Colors.GREY_800),
                         subtitle=ft.Text("[Usuario]", color=ft.Colors.GREY_600),
-                        trailing=ft.Text("12:00 PM", color=ft.Colors.GREY_600),
+                        trailing=ft.Text("12/11/2025", color=ft.Colors.GREY_600),
                     ),
                     ft.Text("Descripción de la actividad.", color=ft.Colors.GREY_600),
                     ft.Row(

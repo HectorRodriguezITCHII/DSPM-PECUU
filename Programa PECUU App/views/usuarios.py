@@ -24,9 +24,9 @@ class Usuarios(ft.Container):
         self.border_radius = 10
 
         self.user_icon = ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=150, color=ft.Colors.GREY_500)
-        self.user_firstname = ft.Text("[Nombre]", size=16, color=ft.Colors.GREY_800)
-        self.user_lastname = ft.Text("[Apellido]", size=16, color=ft.Colors.GREY_800)
-        self.user_id = ft.Text("ID: [000000]", size=16, color=ft.Colors.GREY_800)
+        self.username_text = ft.Text("[Nombre de usuario]", size=16, color=ft.Colors.GREY_800)
+        self.fullname_text = ft.Text("[Nombre Apellido]", size=16, color=ft.Colors.GREY_800)
+        self.no_empleado = ft.Text("5161816", size=16, color=ft.Colors.GREY_800)
 
         self.edit_button = ft.ElevatedButton(
             "Editar", 
@@ -78,12 +78,12 @@ class Usuarios(ft.Container):
                         horizontal_alignment=ft.CrossAxisAlignment.START,
                         alignment=ft.MainAxisAlignment.CENTER,
                         controls=[
+                            ft.Text("Usuario:", size=20, color=ft.Colors.GREY_800, weight=ft.FontWeight.BOLD),
+                            self.username_text,
                             ft.Text("Nombre:", size=20, color=ft.Colors.GREY_800, weight=ft.FontWeight.BOLD),
-                            self.user_firstname,
-                            ft.Text("Apellido:", size=20, color=ft.Colors.GREY_800, weight=ft.FontWeight.BOLD),
-                            self.user_lastname,
-                            ft.Text("ID de Usuario:", size=20, color=ft.Colors.GREY_800, weight=ft.FontWeight.BOLD),
-                            self.user_id,
+                            self.fullname_text,
+                            ft.Text("No. de empleado:", size=20, color=ft.Colors.GREY_800, weight=ft.FontWeight.BOLD),
+                            self.no_empleado,
                         ]
                     )]
                 ),
