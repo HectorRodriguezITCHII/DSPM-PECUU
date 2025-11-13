@@ -24,7 +24,7 @@ class Actividades(ft.Container):
         self.border_radius = 10
 
         self.activity_card = ft.Card(
-            width=600,
+            width=500,
             content=ft.Container(
                 content=ft.Column([
                     ft.ListTile(
@@ -33,7 +33,10 @@ class Actividades(ft.Container):
                         subtitle=ft.Text("[Usuario]", color=ft.Colors.GREY_600),
                         trailing=ft.Text("12/11/2025", color=ft.Colors.GREY_600),
                     ),
-                    ft.Text("Descripción de la actividad.", color=ft.Colors.GREY_600),
+                    ft.Container(
+                        content=[ft.Text("Descripción de la actividad.", color=ft.Colors.GREY_600)],
+                        height=100
+                    ),
                     ft.Row(
                         alignment=ft.MainAxisAlignment.END,
                         controls=[
@@ -61,6 +64,14 @@ class Actividades(ft.Container):
             scroll=ft.ScrollMode.AUTO,
             controls=[
                 InnerHeader("ACTIVIDADES", icon=ft.Icons.HOME),
-                self.activity_card, 
+                ft.ResponsiveRow(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        self.activity_card,
+                        self.activity_card,
+                        self.activity_card,
+                    ]
+                )
+
             ]
         )
