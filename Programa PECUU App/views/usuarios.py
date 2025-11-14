@@ -28,15 +28,6 @@ class Usuarios(ft.Container):
         self.fullname_text = ft.Text("[Nombre Apellido]", size=16, color=ft.Colors.GREY_800)
         self.no_empleado = ft.Text("5161816", size=16, color=ft.Colors.GREY_800)
 
-        self.edit_button = ft.ElevatedButton(
-            "Editar", 
-            icon=ft.Icons.EDIT, 
-            color=ft.Colors.INDIGO_500,
-            width=120,
-            height=40,
-            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20))
-        )
-
         self.logout_button = ft.ElevatedButton(
             "CERRAR SESIÓN", 
             bgcolor=ft.Colors.INDIGO_500, 
@@ -44,15 +35,6 @@ class Usuarios(ft.Container):
             width=200,
             height=40,
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=20, weight="bold"))
-        )
-
-        self.buttons_row = ft.Row(
-            alignment=ft.MainAxisAlignment.CENTER,
-            spacing=20,
-            controls=[
-                self.edit_button,
-                self.logout_button
-            ]
         )
 
         # --- Estructura Principal del Contenido (ft.Column) ---
@@ -88,6 +70,6 @@ class Usuarios(ft.Container):
                     )]
                 ),
                 ft.Container(height=20),  # Espaciado vertical
-                self.buttons_row
+                self.logout_button
             ]
         )

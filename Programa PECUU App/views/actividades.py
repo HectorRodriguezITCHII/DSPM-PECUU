@@ -33,10 +33,7 @@ class Actividades(ft.Container):
                         subtitle=ft.Text("[Usuario]", color=ft.Colors.GREY_600),
                         trailing=ft.Text("12/11/2025", color=ft.Colors.GREY_600),
                     ),
-                    ft.Container(
-                        content=[ft.Text("Descripción de la actividad.", color=ft.Colors.GREY_600)],
-                        height=100
-                    ),
+                    
                     ft.Row(
                         alignment=ft.MainAxisAlignment.END,
                         controls=[
@@ -49,6 +46,23 @@ class Actividades(ft.Container):
                         )
                     ]),
                 ]),
+                width=400,
+                padding=10,
+                bgcolor=ft.Colors.GREY_200,
+                border_radius=10,
+            )
+        )
+
+        self.add_card = ft.Card(
+            width=500,
+            content=ft.Container(
+                alignment=ft.alignment.center,
+                content=ft.Column(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.IconButton(ft.Icons.ADD_CIRCLE, icon_color=ft.Colors.GREY_500, icon_size=50,),
+                    ]
+                ),
                 width=400,
                 padding=10,
                 bgcolor=ft.Colors.GREY_200,
@@ -70,6 +84,7 @@ class Actividades(ft.Container):
                         self.activity_card,
                         self.activity_card,
                         self.activity_card,
+                        self.add_card
                     ]
                 )
 
