@@ -1,6 +1,6 @@
 import flet as ft
 from components.inner_header import InnerHeader
-from views.enlaces_añadir import EnlacesAñadir
+from views.enlaces_agregar import EnlacesAgregar
 
 class Enlaces(ft.Container):
     """
@@ -36,17 +36,7 @@ class Enlaces(ft.Container):
             width=150,
             height=50,
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30),
-            on_click=lambda e: self.change_view("enlaces_añadir") if self.change_view else None
-        )
-
-        self.delete_button = ft.FilledButton(
-            "Eliminar", 
-            icon=ft.Icons.DELETE, 
-            bgcolor=ft.Colors.RED_500,
-            color=ft.Colors.WHITE,
-            width=150,
-            height=50,
-            style=ft.ButtonStyle(text_style=ft.TextStyle(size=20), icon_size=30)
+            on_click=lambda e: self.change_view("enlaces_agregar") if self.change_view else None
         )
 
         # --- Botones de Acción ---
@@ -54,6 +44,12 @@ class Enlaces(ft.Container):
             icon=ft.Icons.VISIBILITY,
             icon_color=ft.Colors.INDIGO_ACCENT_400,
             tooltip="Inspeccionar"
+        )
+        
+        self.delete_button = ft.IconButton(
+            icon=ft.Icons.DELETE,
+            icon_color=ft.Colors.RED_ACCENT_400,
+            tooltip="Eliminar"
         )
         
         # --- Estilo de Texto para las Celdas de la Tabla ---
@@ -72,6 +68,7 @@ class Enlaces(ft.Container):
                 ft.DataColumn(ft.Text("DDNS", style=self.text_style)),
                 ft.DataColumn(ft.Text("Puerto HTTP", style=self.text_style), numeric=True),
                 ft.DataColumn(ft.Text("Puerto RTSP", style=self.text_style), numeric=True),
+                ft.DataColumn(ft.Text(""), ),
             ],
             rows=[
                 ft.DataRow(
@@ -81,6 +78,7 @@ class Enlaces(ft.Container):
                         ft.DataCell(ft.Text("Escuela1.ddns.net", style=self.text_style)),
                         ft.DataCell(ft.Text("80", style=self.text_style)),
                         ft.DataCell(ft.Text("554", style=self.text_style)),
+                        ft.DataCell(self.delete_button),
                     ],
                 ),
                 ft.DataRow(
@@ -90,6 +88,7 @@ class Enlaces(ft.Container):
                         ft.DataCell(ft.Text("PlazaCentral.ddns.net", style=self.text_style)),
                         ft.DataCell(ft.Text("80", style=self.text_style)),
                         ft.DataCell(ft.Text("1024", style=self.text_style)),
+                        ft.DataCell(self.delete_button),
                     ],
                 ),
                 ft.DataRow(
@@ -99,6 +98,7 @@ class Enlaces(ft.Container):
                         ft.DataCell(ft.Text("ParqueNorte.ddns.net", style=self.text_style)),
                         ft.DataCell(ft.Text("81", style=self.text_style)),
                         ft.DataCell(ft.Text("1024", style=self.text_style)),
+                        ft.DataCell(self.delete_button),
                     ],
                 ),
                 ft.DataRow(
@@ -108,6 +108,7 @@ class Enlaces(ft.Container):
                         ft.DataCell(ft.Text("Fraccionamiento.ddns.net", style=self.text_style)),
                         ft.DataCell(ft.Text("82", style=self.text_style)),
                         ft.DataCell(ft.Text("1024", style=self.text_style)),
+                        ft.DataCell(self.delete_button),
                     ],
                 ),
             ],
@@ -126,7 +127,7 @@ class Enlaces(ft.Container):
                 ft.Row(
                     alignment=ft.MainAxisAlignment.CENTER,
                     spacing=20,
-                    controls=[self.add_button, self.delete_button]
+                    controls=[self.add_button]
                 ),
                 ft.Row(
                     controls=[self.data_table]
@@ -134,3 +135,54 @@ class Enlaces(ft.Container):
                 
             ]
         )
+    
+    def add_enlace(self, enlace_data):
+        """
+        Agrega una nueva fila a la tabla de enlaces.
+        
+        :param enlace_data: Diccionario con los datos del enlace.
+        :type enlace_data: dict
+        """
+        # Crear botones de acción para la nueva fila
+        inspect_btn = ft.IconButton(
+            icon=ft.Icons.VISIBILITY,
+            icon_color=ft.Colors.INDIGO_ACCENT_400,
+            tooltip="Inspeccionar"
+        )
+        
+        delete_btn = ft.IconButton(
+            icon=ft.Icons.DELETE,
+            icon_color=ft.Colors.RED_ACCENT_400,
+            tooltip="Eliminar",
+            on_click=lambda e: self.delete_row(e, enlace_data)
+        )
+        
+        # Crear nueva fila
+        new_row = ft.DataRow(
+            cells=[
+                ft.DataCell(inspect_btn),
+                ft.DataCell(ft.Text(enlace_data["nombre"], style=self.text_style)),
+                ft.DataCell(ft.Text(enlace_data["ddns"], style=self.text_style)),
+                ft.DataCell(ft.Text(enlace_data["puerto_http"], style=self.text_style)),
+                ft.DataCell(ft.Text(enlace_data["puerto_rtsp"], style=self.text_style)),
+                ft.DataCell(delete_btn),
+            ]
+        )
+        
+        # Agregar la fila a la tabla
+        self.data_table.rows.append(new_row)
+        self.page.update()
+    
+    def delete_row(self, e, enlace_data):
+        """
+        Elimina una fila de la tabla de enlaces.
+        
+        :param e: Evento de clic.
+        :param enlace_data: Datos del enlace a eliminar.
+        """
+        # Buscar y eliminar la fila
+        for row in self.data_table.rows:
+            if row.cells[1].content.value == enlace_data["nombre"]:
+                self.data_table.rows.remove(row)
+                self.page.update()
+                break

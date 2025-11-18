@@ -6,7 +6,7 @@ from views.actividades import Actividades
 from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
 from views.enlaces import Enlaces
-from views.enlaces_añadir import EnlacesAñadir
+from views.enlaces_agregar import EnlacesAgregar
 from views.logs import Logs
 from views.usuarios import Usuarios
 from views.usuarios_login import UsuariosLogin
@@ -42,10 +42,17 @@ class MainApp(ft.Container):
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
             "enlaces": Enlaces(page, self.change_view),
-            "enlaces_añadir": EnlacesAñadir(page, self.change_view),
             "historial": Logs(page),
-            "usuarios": Usuarios(page),
+            "usuarios": Usuarios(page, self.change_view),
+            "usuarios_login": UsuariosLogin(page, self.change_view),
         }
+        
+        # Crear EnlacesAgregar después de Enlaces para poder pasar el método add_enlace
+        self.views["enlaces_agregar"] = EnlacesAgregar(
+            page, 
+            self.change_view, 
+            self.views["enlaces"].add_enlace
+        )
         
         # Configurar los manejadores de eventos para los botones del menú
         self.setup_menu_events()

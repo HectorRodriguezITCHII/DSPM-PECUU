@@ -1,14 +1,15 @@
 import flet as ft
 from components.inner_header import InnerHeader
+from components.enlaces_agregar import handle_save
 
-class EnlacesAñadir(ft.Container):
+class EnlacesAgregar(ft.Container):
     """
     Representa la vista de "Enlaces - Añadir" de la aplicación.
 
     Hereda de ft.Container y se configura para ocupar toda el área de contenido
     principal de la aplicación.
     """
-    def __init__(self, page: ft.Page, change_view=None):
+    def __init__(self, page: ft.Page, change_view=None, add_enlace_callback=None):
         """
         Inicializa la vista y configura todos los componentes de la interfaz.
 
@@ -16,10 +17,13 @@ class EnlacesAñadir(ft.Container):
         :type page: ft.Page
         :param change_view: Función callback para cambiar de vista.
         :type change_view: callable
+        :param add_enlace_callback: Función callback para agregar un enlace a la tabla.
+        :type add_enlace_callback: callable
         """
         super().__init__()
         self.page = page
         self.change_view = change_view
+        self.add_enlace_callback = add_enlace_callback
         # Configuración del contenedor principal de la vista
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.padding = ft.padding.all(20)
@@ -101,6 +105,7 @@ class EnlacesAñadir(ft.Container):
             bgcolor=ft.Colors.INDIGO_500,
             color=ft.Colors.WHITE,
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=18, weight="bold")),
+            on_click=lambda e: handle_save(self, e)
         )
 
         self.cancel_button = ft.ElevatedButton(
@@ -119,7 +124,7 @@ class EnlacesAñadir(ft.Container):
             alignment=ft.MainAxisAlignment.START,
             scroll=ft.ScrollMode.AUTO,
             controls=[
-                InnerHeader("AÑADIR ENLACE", icon=ft.Icons.ADD_HOME),
+                InnerHeader("NUEVO ENLACE", icon=ft.Icons.ADD_HOME),
                 ft.Column(
                     alignment=ft.MainAxisAlignment.START,
                     width=700,
@@ -199,3 +204,4 @@ class EnlacesAñadir(ft.Container):
                 )
             ]
         )
+    
