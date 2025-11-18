@@ -70,48 +70,6 @@ class Enlaces(ft.Container):
                 ft.DataColumn(ft.Text("Puerto RTSP", style=self.text_style), numeric=True),
                 ft.DataColumn(ft.Text(""), ),
             ],
-            rows=[
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(self.inspect_button),
-                        ft.DataCell(ft.Text("Escuela Pública", style=self.text_style)),
-                        ft.DataCell(ft.Text("Escuela1.ddns.net", style=self.text_style)),
-                        ft.DataCell(ft.Text("80", style=self.text_style)),
-                        ft.DataCell(ft.Text("554", style=self.text_style)),
-                        ft.DataCell(self.delete_button),
-                    ],
-                ),
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(self.inspect_button),
-                        ft.DataCell(ft.Text("Plaza Central", style=self.text_style)),
-                        ft.DataCell(ft.Text("PlazaCentral.ddns.net", style=self.text_style)),
-                        ft.DataCell(ft.Text("80", style=self.text_style)),
-                        ft.DataCell(ft.Text("1024", style=self.text_style)),
-                        ft.DataCell(self.delete_button),
-                    ],
-                ),
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(self.inspect_button),
-                        ft.DataCell(ft.Text("Parque Norte", style=self.text_style)),
-                        ft.DataCell(ft.Text("ParqueNorte.ddns.net", style=self.text_style)),
-                        ft.DataCell(ft.Text("81", style=self.text_style)),
-                        ft.DataCell(ft.Text("1024", style=self.text_style)),
-                        ft.DataCell(self.delete_button),
-                    ],
-                ),
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(self.inspect_button),
-                        ft.DataCell(ft.Text("Fraccionamiento", style=self.text_style)),
-                        ft.DataCell(ft.Text("Fraccionamiento.ddns.net", style=self.text_style)),
-                        ft.DataCell(ft.Text("82", style=self.text_style)),
-                        ft.DataCell(ft.Text("1024", style=self.text_style)),
-                        ft.DataCell(self.delete_button),
-                    ],
-                ),
-            ],
         )
 
         # --- Estructura Principal del Contenido (ft.Column) ---
