@@ -267,7 +267,7 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
             
             if 'error' in item:
                 container_content.append(
-                    ft.Text(f"⚠️ {item['error']}", color=ft.Colors.RED_600, size=12)
+                    ft.Text(f"{item['error']}", color=ft.Colors.RED_600, size=12)
                 )
             else:
                 container_content.extend([
@@ -289,7 +289,7 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
         results_column.controls.append(
             ft.Container(
                 content=ft.Column([
-                    ft.Text("🚫 No se encontraron URLs sin puertos abiertos", 
+                    ft.Text("No se encontraron URLs sin puertos abiertos", 
                            weight="bold", color=ft.Colors.ORANGE_700),
                     ft.Text("Todas las URLs escaneadas tienen al menos un puerto abierto.", 
                            color=ft.Colors.ORANGE_600)
