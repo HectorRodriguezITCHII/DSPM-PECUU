@@ -1,5 +1,6 @@
 import flet as ft
 from components.inner_header import InnerHeader
+from components.enlaces import EnlacesManager
 from views.enlaces_agregar import EnlacesAgregar
 
 class Enlaces(ft.Container):
@@ -95,52 +96,9 @@ class Enlaces(ft.Container):
         )
     
     def add_enlace(self, enlace_data):
-        """
-        Agrega una nueva fila a la tabla de enlaces.
-        
-        :param enlace_data: Diccionario con los datos del enlace.
-        :type enlace_data: dict
-        """
-        # Crear botones de acción para la nueva fila
-        inspect_btn = ft.IconButton(
-            icon=ft.Icons.VISIBILITY,
-            icon_color=ft.Colors.INDIGO_ACCENT_400,
-            tooltip="Inspeccionar"
-        )
-        
-        delete_btn = ft.IconButton(
-            icon=ft.Icons.DELETE,
-            icon_color=ft.Colors.RED_ACCENT_400,
-            tooltip="Eliminar",
-            on_click=lambda e: self.delete_row(e, enlace_data)
-        )
-        
-        # Crear nueva fila
-        new_row = ft.DataRow(
-            cells=[
-                ft.DataCell(inspect_btn),
-                ft.DataCell(ft.Text(enlace_data["nombre"], style=self.text_style)),
-                ft.DataCell(ft.Text(enlace_data["ddns"], style=self.text_style)),
-                ft.DataCell(ft.Text(enlace_data["puerto_http"], style=self.text_style)),
-                ft.DataCell(ft.Text(enlace_data["puerto_rtsp"], style=self.text_style)),
-                ft.DataCell(delete_btn),
-            ]
-        )
-        
-        # Agregar la fila a la tabla
-        self.data_table.rows.append(new_row)
-        self.page.update()
+        """Delegar en EnlacesManager para añadir un enlace."""
+        EnlacesManager.add_enlace(self, enlace_data)
     
     def delete_row(self, e, enlace_data):
-        """
-        Elimina una fila de la tabla de enlaces.
-        
-        :param e: Evento de clic.
-        :param enlace_data: Datos del enlace a eliminar.
-        """
-        # Buscar y eliminar la fila
-        for row in self.data_table.rows:
-            if row.cells[1].content.value == enlace_data["nombre"]:
-                self.data_table.rows.remove(row)
-                self.page.update()
-                break
+        """Delegar en EnlacesManager para eliminar una fila."""
+        EnlacesManager.delete_row(self, enlace_data)

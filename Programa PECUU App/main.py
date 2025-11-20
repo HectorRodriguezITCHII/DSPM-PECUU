@@ -106,6 +106,16 @@ class MainApp(ft.Container):
         :param view_name: Nombre (clave) de la vista a mostrar.
         :type view_name: str
         """
+        # Si se pasó un control/instancia de vista, usarla directamente
+        if not isinstance(view_name, str):
+            self.body.content.controls[1] = view_name
+            # Al navegar a un control nuevo no intentamos actualizar el menú
+            try:
+                self.page.update()
+            except Exception:
+                pass
+            return
+
         # Reemplaza el control en el índice 1 del ft.Row (la vista actual)
         # con la nueva vista obtenida del diccionario 'self.views'.
         self.body.content.controls[1] = self.views.get(

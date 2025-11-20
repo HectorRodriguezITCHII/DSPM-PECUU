@@ -46,12 +46,18 @@ def handle_save(self, e):
     self.dvr_ip_textfield.value = ""
     self.dvr_mac_textfield.value = ""
         
-    # Mostrar mensaje de éxito
-    self.page.snack_bar = ft.SnackBar(
-        content=ft.Text("Enlace agregado exitosamente"),
-        bgcolor=ft.Colors.GREEN_400
-    )
-    self.page.snack_bar.open = True
+    # Mostrar mensaje de éxito con Snackbar
+    try:
+        snackbar = ft.SnackBar(
+            ft.Text("Enlace agregado exitosamente", color=ft.Colors.WHITE),
+            bgcolor=ft.Colors.GREEN_700,
+            duration=3000
+        )
+        self.page.overlay.append(snackbar)
+        snackbar.open = True
+        self.page.update()
+    except Exception as ex:
+        print(f"Error showing snackbar: {ex}")
         
     # Regresar a la vista de enlaces
     if self.change_view:
