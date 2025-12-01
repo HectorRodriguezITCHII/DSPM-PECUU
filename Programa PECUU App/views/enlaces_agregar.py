@@ -89,6 +89,9 @@ class EnlacesAgregar(ft.Container):
             width=400,
             height=50,
             text_style=ft.TextStyle(size=16),
+            input_filter=ft.InputFilter(
+                regex_string=r"^[0-9]{0,3}\.?[0-9]{0,3}\.?[0-9]{0,3}\.?[0-9]{0,3}$"
+            ),
         )
 
         self.dvr_mac_textfield = ft.TextField(
@@ -96,6 +99,9 @@ class EnlacesAgregar(ft.Container):
             width=400,
             height=50,
             text_style=ft.TextStyle(size=16),
+            input_filter=ft.InputFilter(
+                regex_string=r"^[0-9a-fA-F:]*$"
+            ),
         )
 
         self.save_button = ft.FilledButton(

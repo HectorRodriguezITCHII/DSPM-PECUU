@@ -3,6 +3,8 @@ import os
 from components.header import Header
 from components.menu import Menu
 from views.actividades import Actividades
+from views.actividades_agregar import ActividadesAgregar
+from views.actividades_editar import ActividadesEditar
 from views.escaner_general import EscanerGeneral
 from views.escaner_local import EscanerLocal
 from views.enlaces import Enlaces
@@ -38,7 +40,7 @@ class MainApp(ft.Container):
         # Vistas dinámicas de la aplicación
         # Las instancias de las vistas son creadas aquí para ser reutilizadas.
         self.views = {
-            "actividades": Actividades(page),
+            "actividades": Actividades(page, self.change_view),
             "escaner_general": EscanerGeneral(page),
             "escaner_local": EscanerLocal(page),
             "enlaces": Enlaces(page, self.change_view),
@@ -46,6 +48,23 @@ class MainApp(ft.Container):
             "usuarios": Usuarios(page, self.change_view),
             "usuarios_login": UsuariosLogin(page, self.change_view),
         }
+        
+        # Crear ActividadesAgregar después de Actividades para poder pasar el método add_actividad
+        self.views["actividades_agregar"] = ActividadesAgregar(
+            page, 
+            self.change_view, 
+            self.views["actividades"].add_actividad
+        )
+        
+        # Crear ActividadesEditar después de Actividades para poder pasar el método update_actividad
+        self.views["actividades_editar"] = ActividadesEditar(
+            page, 
+            self.change_view, 
+            self.views["actividades"].update_actividad
+        )
+        
+        # Pasar referencia de actividades_editar a actividades para poder editar
+        self.views["actividades"].set_actividades_editar_view(self.views["actividades_editar"])
         
         # Crear EnlacesAgregar después de Enlaces para poder pasar el método add_enlace
         self.views["enlaces_agregar"] = EnlacesAgregar(
@@ -116,11 +135,11 @@ class MainApp(ft.Container):
                 pass
             return
 
+        # Obtener la vista del diccionario
+        view = self.views.get(view_name, ft.Text("Vista no disponible"))
+        
         # Reemplaza el control en el índice 1 del ft.Row (la vista actual)
-        # con la nueva vista obtenida del diccionario 'self.views'.
-        self.body.content.controls[1] = self.views.get(
-            view_name, ft.Text("Vista no disponible")
-        )
+        self.body.content.controls[1] = view
 
         # Actualizar el estado visual (ícono/color) del menú
         try:

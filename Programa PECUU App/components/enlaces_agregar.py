@@ -1,4 +1,5 @@
 import flet as ft
+import re
 
 def handle_save(self, e):
     """
@@ -17,6 +18,42 @@ def handle_save(self, e):
         self.page.snack_bar.open = True
         self.page.update()
         return
+    
+    # Validar formato de IP del DVR si se proporciona
+    if self.dvr_ip_textfield.value:
+        ip_pattern = r"^([0-9]{1,3}\.){3}[0-9]{1,3}$"
+        if not re.match(ip_pattern, self.dvr_ip_textfield.value):
+            self.page.snack_bar = ft.SnackBar(
+                content=ft.Text("El formato de IP del DVR no es válido (ej: 192.168.1.1)"),
+                bgcolor=ft.Colors.RED_400
+            )
+            self.page.snack_bar.open = True
+            self.page.update()
+            return
+        
+        # Validar que cada octeto esté entre 0-255
+        octetos = self.dvr_ip_textfield.value.split(".")
+        for octeto in octetos:
+            if int(octeto) > 255:
+                self.page.snack_bar = ft.SnackBar(
+                    content=ft.Text("IP inválida: cada octeto debe estar entre 0-255"),
+                    bgcolor=ft.Colors.RED_400
+                )
+                self.page.snack_bar.open = True
+                self.page.update()
+                return
+    
+    # Validar formato de MAC del DVR si se proporciona
+    if self.dvr_mac_textfield.value:
+        mac_pattern = r"^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$"
+        if not re.match(mac_pattern, self.dvr_mac_textfield.value):
+            self.page.snack_bar = ft.SnackBar(
+                content=ft.Text("El formato de MAC del DVR no es válido (ej: 00:1A:2B:3C:4D:5E)"),
+                bgcolor=ft.Colors.RED_400
+            )
+            self.page.snack_bar.open = True
+            self.page.update()
+            return
         
     # Crear diccionario con los datos del enlace
     enlace_data = {
