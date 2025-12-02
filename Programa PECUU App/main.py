@@ -1,52 +1,181 @@
 import flet as ft
+import os
 from components.header import Header
 from components.menu import Menu
+from views.actividades import Actividades
+from views.actividades_agregar import ActividadesAgregar
+from views.actividades_editar import ActividadesEditar
 from views.escaner_general import EscanerGeneral
+from views.escaner_local import EscanerLocal
+from views.enlaces import Enlaces
+from views.enlaces_agregar import EnlacesAgregar
+from views.logs import Logs
+from views.usuarios import Usuarios
+from views.usuarios_login import UsuariosLogin
 
 class MainApp(ft.Container):
+    """
+    Clase principal que define la estructura y el comportamiento de la
+    interfaz de usuario de la aplicación.
+
+    Hereda de ft.Container para ocupar toda la página y gestiona el
+    Header, el Menú de navegación y las Vistas principales (Escaner).
+    """
     def __init__(self, page: ft.Page):
+        """
+        Inicializa la aplicación principal y configura la página de Flet.
+
+        :param page: El objeto ft.Page proporcionado por el framework Flet.
+        :type page: ft.Page
+        """
         super().__init__(expand=True)
         self.page = page
         self.page.title = "Sistema de Gestión de Cámaras Ciudadanas"
-        self.page.bgcolor = ft.Colors.GREY_100
+        self.page.bgcolor = ft.Colors.WHITE
         
-        #componentes
+        # Componentes de la interfaz
         self.header = Header(page)
         self.menu = Menu(page)
         
-        #vistas
-        "escaner_general": EscanerGeneral(page)
+        # Vistas dinámicas de la aplicación
+        # Las instancias de las vistas son creadas aquí para ser reutilizadas.
+        self.views = {
+            "actividades": Actividades(page, self.change_view),
+            "escaner_general": EscanerGeneral(page),
+            "escaner_local": EscanerLocal(page),
+            "enlaces": Enlaces(page, self.change_view),
+            "historial": Logs(page),
+            "usuarios": Usuarios(page, self.change_view),
+            "usuarios_login": UsuariosLogin(page, self.change_view),
+        }
         
+        # Crear ActividadesAgregar después de Actividades para poder pasar el método add_actividad
+        self.views["actividades_agregar"] = ActividadesAgregar(
+            page, 
+            self.change_view, 
+            self.views["actividades"].add_actividad
+        )
         
+        # Crear ActividadesEditar después de Actividades para poder pasar el método update_actividad
+        self.views["actividades_editar"] = ActividadesEditar(
+            page, 
+            self.change_view, 
+            self.views["actividades"].update_actividad
+        )
         
+        # Pasar referencia de actividades_editar a actividades para poder editar
+        self.views["actividades"].set_actividades_editar_view(self.views["actividades_editar"])
         
+        # Crear EnlacesAgregar después de Enlaces para poder pasar el método add_enlace
+        self.views["enlaces_agregar"] = EnlacesAgregar(
+            page, 
+            self.change_view, 
+            self.views["enlaces"].add_enlace
+        )
+        
+        # Configurar los manejadores de eventos para los botones del menú
+        self.setup_menu_events()
+        
+        # Vista inicial al cargar la aplicación
+        self.current_view = self.views["actividades"]
+        
+        # Cuerpo principal (Contenedor que alberga el Menú y la Vista actual)
+        self.body = ft.Container(
+            expand=True,
+            content=ft.Row(
+                vertical_alignment=ft.CrossAxisAlignment.STRETCH,
+                controls=[
+                    self.menu,
+                    self.current_view
+                ]
+            )
+        )
+        
+        # Agregar el diseño final a la página de Flet (Header y Body)
+        self.page.add(ft.Column(
+            expand=True,
+            controls=[
+                self.header,
+                self.body
+            ]
+        ))
+    
+    def setup_menu_events(self):
+        """
+        Asigna la función 'change_view' a los eventos 'on_click' de los 
+        botones del menú (tanto en 'Menu' como en 'Header').
+        
+        Nota: Se utilizan funciones lambda para pasar el nombre de la vista 
+        como argumento.
+        """
+        # Configurar eventos del menú lateral
+        self.menu.actividades_btn.on_click = lambda e: self.change_view("actividades")
+        self.menu.escaner_general_btn.on_click = lambda e: self.change_view("escaner_general")
+        self.menu.escaner_local_btn.on_click = lambda e: self.change_view("escaner_local")
+        self.menu.enlaces_btn.on_click = lambda e: self.change_view("enlaces")
+        self.menu.historial_btn.on_click = lambda e: self.change_view("historial")
+        self.menu.usuarios_btn.on_click = lambda e: self.change_view("usuarios")
 
-'''def main(page: ft.Page):
-    page.bgcolor = ft.Colors.GREY_200
-    page.title = "Sistema de Gestión de Cámaras Ciudadanas"
-    page.padding = ft.padding.symmetric(20, 10)
-    page.vertical_alignment = ft.CrossAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
-    text_title, img_logo_white, bottom_bar = setup_ui(page)
-    
-    page.appbar = ft.AppBar(
-        leading=img_logo_white,
-        leading_width=150,
-        title=text_title,
-        center_title=False,
-        toolbar_height=60,
-        bgcolor=ft.Colors.BLUE_GREY_500,
-        elevation=8,
-        shadow_color=ft.Colors.BLACK38,
-        actions=[
-            ft.IconButton(ft.Icons.ACCOUNT_CIRCLE, icon_color=ft.Colors.WHITE, icon_size=30, tooltip="Usuarios"),
-            ft.IconButton(ft.Icons.SETTINGS, icon_color=ft.Colors.WHITE, icon_size=30, tooltip="Configuración")
-        ],
-    )
-    
-    page.add(
-        bottom_bar
-    )
+    def change_view(self, view_name):
+        """
+        Cambia la vista actual en el cuerpo principal de la aplicación.
+        
+        Si la vista no existe en 'self.views', muestra un mensaje de error.
 
-ft.app(target=main)'''
+        :param view_name: Nombre (clave) de la vista a mostrar.
+        :type view_name: str
+        """
+        # Si se pasó un control/instancia de vista, usarla directamente
+        if not isinstance(view_name, str):
+            self.body.content.controls[1] = view_name
+            # Al navegar a un control nuevo no intentamos actualizar el menú
+            try:
+                self.page.update()
+            except Exception:
+                pass
+            return
+
+        # Obtener la vista del diccionario
+        view = self.views.get(view_name, ft.Text("Vista no disponible"))
+        
+        # Reemplaza el control en el índice 1 del ft.Row (la vista actual)
+        self.body.content.controls[1] = view
+
+        # Actualizar el estado visual (ícono/color) del menú
+        try:
+            self.menu.set_selected(view_name)
+        except Exception:
+            # Capturar excepciones si el nombre de la vista no corresponde
+            # a un botón en el menú (ej. vista de "usuarios" o "actividades")
+            pass
+        
+        # Forzar la actualización de la interfaz de usuario de Flet
+        self.page.update()
+
+def main(page: ft.Page):
+    """
+    Función principal de Flet que se ejecuta al iniciar la aplicación.
+    
+    Configura la ruta de los assets y lanza la instancia de MainApp.
+
+    :param page: El objeto ft.Page proporcionado por Flet.
+    :type page: ft.Page
+    """
+    # Obtener la ruta absoluta del directorio donde se ejecuta el script (main.py)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Construir la ruta al directorio de assets (src/assets)
+    assets_path = os.path.join(base_dir, "src", "assets")
+    page.assets_dir = assets_path
+    
+    # Inicializar y correr la aplicación principal
+    MainApp(page)
+
+if __name__ == "__main__":
+    """
+    Punto de entrada del script.
+    
+    Inicia la aplicación de Flet con la función 'main' como destino.
+    """
+    # Ejecutar la app de Flet
+    ft.app(target=main)
