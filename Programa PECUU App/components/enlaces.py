@@ -1,4 +1,5 @@
 import flet as ft
+from services.api_service import ApiService
 
 
 class EnlacesManager:
@@ -113,15 +114,52 @@ class EnlacesManager:
 
     @staticmethod
     def delete_row(view: ft.Container, enlace_data: dict):
-        """Elimina la fila de la data_table que coincide con enlace_data['nombre']"""
-        for row in list(view.data_table.rows):
-            # row.cells[1] es ft.DataCell con un ft.Text en content
-            cell = row.cells[1]
-            text = None
-            if hasattr(cell, 'content') and hasattr(cell.content, 'value'):
-                text = cell.content.value
-            if text == enlace_data.get("nombre"):
-                view.data_table.rows.remove(row)
-                if hasattr(view, "page") and view.page and hasattr(view.page, "update"):
+        """Elimina la fila de la data_table que coincide con enlace_data['nombre']
+        y también lo elimina de la API."""
+        enlace_nombre = enlace_data.get("nombre")
+        
+        # Intentar eliminar de la API
+        print(f"Eliminando enlace de la API: {enlace_nombre}")
+        api_result = ApiService.delete_link(enlace_nombre)
+        
+        if api_result["success"]:
+            print(f"Enlace eliminado de la API: {api_result['message']}")
+            
+            # Eliminar de la tabla local
+            for row in list(view.data_table.rows):
+                # row.cells[1] es ft.DataCell con un ft.Text en content
+                cell = row.cells[1]
+                text = None
+                if hasattr(cell, 'content') and hasattr(cell.content, 'value'):
+                    text = cell.content.value
+                if text == enlace_nombre:
+                    view.data_table.rows.remove(row)
+                    if hasattr(view, "page") and view.page and hasattr(view.page, "update"):
+                        # Mostrar mensaje de éxito
+                        try:
+                            snackbar = ft.SnackBar(
+                                ft.Text("Enlace eliminado correctamente", color=ft.Colors.WHITE),
+                                bgcolor=ft.Colors.GREEN_700,
+                                duration=3000
+                            )
+                            view.page.overlay.append(snackbar)
+                            snackbar.open = True
+                        except Exception:
+                            pass
+                        view.page.update()
+                    break
+        else:
+            # Error al eliminar de la API
+            print(f"Error al eliminar enlace de la API: {api_result['message']}")
+            if hasattr(view, "page") and view.page:
+                try:
+                    snackbar = ft.SnackBar(
+                        ft.Text(f"Error: {api_result['message']}", color=ft.Colors.WHITE),
+                        bgcolor=ft.Colors.RED_700,
+                        duration=5000
+                    )
+                    view.page.overlay.append(snackbar)
+                    snackbar.open = True
                     view.page.update()
-                break
+                except Exception as ex:
+                    print(f"Error al mostrar snackbar: {ex}")

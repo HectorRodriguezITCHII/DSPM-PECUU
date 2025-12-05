@@ -2,6 +2,7 @@ import flet as ft
 from components.inner_header import InnerHeader
 from components.enlaces import EnlacesManager
 from views.enlaces_agregar import EnlacesAgregar
+from services.api_service import ApiService
 
 class Enlaces(ft.Container):
     """
@@ -94,6 +95,9 @@ class Enlaces(ft.Container):
                 
             ]
         )
+        
+        # Cargar datos desde la API
+        self.load_enlaces_from_api()
     
     def add_enlace(self, enlace_data):
         """Delegar en EnlacesManager para añadir un enlace."""
@@ -102,3 +106,33 @@ class Enlaces(ft.Container):
     def delete_row(self, e, enlace_data):
         """Delegar en EnlacesManager para eliminar una fila."""
         EnlacesManager.delete_row(self, enlace_data)
+    
+    def load_enlaces_from_api(self):
+        """
+        Carga los enlaces desde la API y los muestra en la tabla.
+        Este método se llama cuando se inicializa la vista.
+        """
+        try:
+            enlaces = ApiService.get_links()
+            if enlaces:
+                # Limpiar la tabla actual
+                self.data_table.rows.clear()
+                
+                # Agregar cada enlace a la tabla
+                for enlace in enlaces:
+                    EnlacesManager.add_enlace(self, enlace)
+                
+                print(f"Se cargaron {len(enlaces)} enlaces desde la API")
+            else:
+                print("No se pudieron obtener los enlaces desde la API")
+        except Exception as e:
+            print(f"Error al cargar enlaces desde la API: {e}")
+    
+    def refresh_enlaces_from_api(self):
+        """
+        Refresca los enlaces desde la API.
+        Puede ser llamado por un botón de actualización.
+        """
+        self.load_enlaces_from_api()
+        if self.page:
+            self.page.update()

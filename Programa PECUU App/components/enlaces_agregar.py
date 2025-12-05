@@ -1,10 +1,11 @@
 import flet as ft
 import re
+from services.api_service import ApiService
 
 def handle_save(self, e):
     """
     Manejador del evento de clic del botón guardar.
-    Valida los campos y agrega un nuevo enlace a la tabla.
+    Valida los campos, crea el enlace en la API y lo agrega a la tabla.
         
     :param e: Evento de clic.
     """
@@ -67,35 +68,56 @@ def handle_save(self, e):
         "dvr_ip": self.dvr_ip_textfield.value or "",
         "dvr_mac": self.dvr_mac_textfield.value or "",
     }
+    
+    # Intentar crear el enlace en la API
+    print(f"Creando enlace: {enlace_data['nombre']}")
+    api_result = ApiService.create_link(enlace_data)
+    
+    if api_result["success"]:
+        print(f"Enlace creado exitosamente: {api_result['message']}")
         
-    # Llamar al callback para agregar el enlace
-    if self.add_enlace_callback:
-        self.add_enlace_callback(enlace_data)
+        # Llamar al callback local para agregar a la tabla
+        if self.add_enlace_callback:
+            self.add_enlace_callback(enlace_data)
         
-    # Limpiar los campos
-    self.name_textfield.value = ""
-    self.ddns_textfield.value = ""
-    self.http_port_dropdown.value = None
-    self.rtsp_port_dropdown.value = None
-    self.wifi_name_textfield.value = ""
-    self.wifi_password_textfield.value = ""
-    self.modem_password_textfield.value = ""
-    self.dvr_ip_textfield.value = ""
-    self.dvr_mac_textfield.value = ""
+        # Limpiar los campos
+        self.name_textfield.value = ""
+        self.ddns_textfield.value = ""
+        self.http_port_dropdown.value = None
+        self.rtsp_port_dropdown.value = None
+        self.wifi_name_textfield.value = ""
+        self.wifi_password_textfield.value = ""
+        self.modem_password_textfield.value = ""
+        self.dvr_ip_textfield.value = ""
+        self.dvr_mac_textfield.value = ""
         
-    # Mostrar mensaje de éxito con Snackbar
-    try:
-        snackbar = ft.SnackBar(
-            ft.Text("Enlace agregado exitosamente", color=ft.Colors.WHITE),
-            bgcolor=ft.Colors.GREEN_700,
-            duration=3000
-        )
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
-        self.page.update()
-    except Exception as ex:
-        print(f"Error showing snackbar: {ex}")
+        # Mostrar mensaje de éxito
+        try:
+            snackbar = ft.SnackBar(
+                ft.Text("Enlace creado exitosamente", color=ft.Colors.WHITE),
+                bgcolor=ft.Colors.GREEN_700,
+                duration=3000
+            )
+            self.page.overlay.append(snackbar)
+            snackbar.open = True
+            self.page.update()
+        except Exception as ex:
+            print(f"Error showing snackbar: {ex}")
         
-    # Regresar a la vista de enlaces
-    if self.change_view:
-        self.change_view("enlaces")
+        # Regresar a la vista de enlaces
+        if self.change_view:
+            self.change_view("enlaces")
+    else:
+        # Mostrar error
+        print(f"Error al crear enlace: {api_result['message']}")
+        try:
+            snackbar = ft.SnackBar(
+                ft.Text(f"Error: {api_result['message']}", color=ft.Colors.WHITE),
+                bgcolor=ft.Colors.RED_700,
+                duration=5000
+            )
+            self.page.overlay.append(snackbar)
+            snackbar.open = True
+            self.page.update()
+        except Exception as ex:
+            print(f"Error showing snackbar: {ex}")
