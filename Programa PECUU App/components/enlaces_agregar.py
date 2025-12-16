@@ -60,13 +60,17 @@ def handle_save(self, e):
     enlace_data = {
         "nombre": self.name_textfield.value,
         "ddns": self.ddns_textfield.value,
-        "puerto_http": self.http_port_dropdown.value or "80",
-        "puerto_rtsp": self.rtsp_port_dropdown.value or "554",
+        "puerto_http": self.http_port_textfield.value or "",
+        "puerto_rtsp": self.rtsp_port_textfield.value or "",
         "wifi_nombre": self.wifi_name_textfield.value or "",
         "wifi_password": self.wifi_password_textfield.value or "",
         "modem_password": self.modem_password_textfield.value or "",
         "dvr_ip": self.dvr_ip_textfield.value or "",
         "dvr_mac": self.dvr_mac_textfield.value or "",
+        "user1": self.user1_textfield.value or "",
+        "user1_password": self.user1_password_textfield.value or "",
+        "user2": self.user2_textfield.value or "",
+        "user2_password": self.user2_password_textfield.value or "",
     }
     
     # Intentar crear el enlace en la API
@@ -83,13 +87,17 @@ def handle_save(self, e):
         # Limpiar los campos
         self.name_textfield.value = ""
         self.ddns_textfield.value = ""
-        self.http_port_dropdown.value = None
-        self.rtsp_port_dropdown.value = None
+        self.http_port_textfield.value = ""
+        self.rtsp_port_textfield.value = ""
         self.wifi_name_textfield.value = ""
         self.wifi_password_textfield.value = ""
         self.modem_password_textfield.value = ""
         self.dvr_ip_textfield.value = ""
         self.dvr_mac_textfield.value = ""
+        self.user1_textfield.value = ""
+        self.user1_password_textfield.value = ""
+        self.user2_textfield.value = ""
+        self.user2_password_textfield.value = ""
         
         # Mostrar mensaje de éxito
         try:

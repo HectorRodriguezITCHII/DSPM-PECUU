@@ -1,6 +1,11 @@
 import socket
 import flet as ft
 import time
+from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+import os
 from services.api_service import ApiService
 
 PORT_LIST = [80, 81, 82, 83, 84, 85, 86, 87, 88, 554, 1024, 1025, 1026, 1027, 1028, 1029]
@@ -8,6 +13,9 @@ PORT_LIST = [80, 81, 82, 83, 84, 85, 86, 87, 88, 554, 1024, 1025, 1026, 1027, 10
 # Las URLs ahora se cargan dinámicamente desde la API
 # Este es un fallback en caso de que la API falle
 PREDEFINED_URLS = []
+
+# Variable global para almacenar la ruta del último archivo Excel generado
+last_excel_file = None
 
 def scan_ports(ip_addr: str, results_column: ft.Column):
     """
@@ -49,7 +57,162 @@ def scan_ports(ip_addr: str, results_column: ft.Column):
     return open_ports, closed_ports
 
 
-def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_button: ft.FilledButton, page: ft.Page):
+def create_activities_for_no_ports(scan_results: list, results_column: ft.Column, page: ft.Page):
+    """
+    Crea actividades automáticamente para los enlaces sin puertos abiertos.
+
+    Después de completar el escaneo, esta función identifica los enlaces que no tienen
+    ningún puerto abierto y crea una actividad de seguimiento para cada uno.
+
+    :param scan_results: Lista de resultados del escaneo.
+    :type scan_results: list
+    :param results_column: Columna de Flet donde se mostrarán los resultados finales.
+    :type results_column: ft.Column
+    :param page: La página principal de Flet, utilizada para forzar las actualizaciones de UI.
+    :type page: ft.Page
+    """
+    # Filtrar los enlaces sin puertos abiertos y con estado exitoso
+    no_ports_links = [
+        item for item in scan_results 
+        if item['status'] == 'success' and not item['open_ports']
+    ]
+    
+    if not no_ports_links:
+        print("[INFO] No hay enlaces sin puertos abiertos para crear actividades")
+        return
+    
+    print(f"[INFO] Creando actividades para {len(no_ports_links)} enlaces sin puertos abiertos")
+    
+    # Crear una actividad por cada enlace sin puertos abiertos
+    for link in no_ports_links:
+        actividad_data = {
+            "titulo": f"Revisar: {link['nombre'] if 'nombre' in link else link['url']}",
+            "descripcion": f"El escaneo general detectó que el enlace {link['url']} (IP: {link['ip']}) no tiene ningún puerto abierto en la lista de puertos monitoreados.",
+            "fecha": datetime.now().strftime("%Y-%m-%d")
+        }
+        
+        try:
+            result = ApiService.create_activity(actividad_data)
+            if result["success"]:
+                print(f"[SUCCESS] Actividad creada para {link['url']}")
+            else:
+                print(f"[ERROR] No se pudo crear actividad para {link['url']}: {result['message']}")
+        except Exception as ex:
+            print(f"[ERROR] Excepción al crear actividad para {link['url']}: {str(ex)}")
+    
+    print("[INFO] Proceso de creación de actividades completado")
+
+
+def export_scan_results_to_excel(scan_results: list) -> str:
+    """
+    Exporta los resultados del escaneo a un archivo Excel.
+
+    Crea un archivo Excel con los resultados del escaneo general, incluyendo
+    información detallada sobre cada enlace escaneado, puertos abiertos/cerrados
+    y estado del escaneo.
+
+    :param scan_results: Lista de resultados del escaneo.
+    :type scan_results: list
+    :returns: Ruta del archivo Excel generado.
+    :rtype: str
+    """
+    global last_excel_file
+    
+    try:
+        # Crear workbook y hoja
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Escaneo General"
+        
+        # Definir estilos
+        header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+        header_font = Font(bold=True, color="FFFFFF", size=12)
+        title_fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
+        title_font = Font(bold=True, size=11)
+        success_fill = PatternFill(start_color="E2EFDA", end_color="E2EFDA", fill_type="solid")
+        error_fill = PatternFill(start_color="FCE4D6", end_color="FCE4D6", fill_type="solid")
+        border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+        
+        # Encabezados principales
+        headers = ["DDNS/URL", "IP", "Estado", "Puertos Abiertos", "Puertos Cerrados", "Total Puertos"]
+        ws.append(headers)
+        
+        # Aplicar estilo a los encabezados
+        for cell in ws[1]:
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal="center", vertical="center")
+            cell.border = border
+        
+        # Agregar datos del escaneo
+        row_num = 2
+        for item in scan_results:
+            if item['status'] == 'success':
+                estado = "✓ Exitoso"
+                fill = success_fill
+                puertos_abiertos = ', '.join(map(str, item['open_ports'])) if item['open_ports'] else "-"
+                puertos_cerrados = ', '.join(map(str, item['closed_ports'])) if item['closed_ports'] else "-"
+                total_puertos = len(item['closed_ports']) + len(item['open_ports'])
+            else:
+                estado = f"✗ {item['status']}: {item.get('error', 'Error desconocido')}"
+                fill = error_fill
+                puertos_abiertos = "-"
+                puertos_cerrados = "-"
+                total_puertos = 0
+            
+            row_data = [
+                item['url'],
+                item.get('ip', '-'),
+                estado,
+                puertos_abiertos,
+                puertos_cerrados,
+                total_puertos
+            ]
+            
+            ws.append(row_data)
+            
+            # Aplicar estilo a la fila
+            for cell in ws[row_num]:
+                cell.fill = fill
+                cell.border = border
+                cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+            
+            row_num += 1
+        
+        # Ajustar ancho de columnas
+        column_widths = [25, 20, 30, 30, 30, 15]
+        for i, width in enumerate(column_widths, 1):
+            ws.column_dimensions[get_column_letter(i)].width = width
+        
+        # Crear carpeta de reportes si no existe
+        reports_folder = os.path.join(os.path.expanduser("~"), "Documents", "SGCC_Reportes")
+        if not os.path.exists(reports_folder):
+            os.makedirs(reports_folder)
+        
+        # Generar nombre del archivo con fecha y hora
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = os.path.join(reports_folder, f"escaneo_general_{timestamp}.xlsx")
+        
+        # Guardar el archivo
+        wb.save(file_path)
+        
+        # Guardar la ruta en la variable global
+        last_excel_file = file_path
+        
+        print(f"[SUCCESS] Archivo Excel generado: {file_path}")
+        return file_path
+        
+    except Exception as ex:
+        print(f"[ERROR] Error al generar Excel: {str(ex)}")
+        return None
+
+
+def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_button: ft.FilledButton, page: ft.Page, download_button: ft.FilledButton = None):
     """
     Manejador de eventos para iniciar el Escaneo General de DDNS desde la API.
 
@@ -66,6 +229,8 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
     :type scan_button: ft.FilledButton
     :param page: La página principal de Flet, utilizada para forzar las actualizaciones de UI.
     :type page: ft.Page
+    :param download_button: El botón de descarga a habilitar cuando se genere el Excel.
+    :type download_button: ft.FilledButton
     """
     # --- Configuración Inicial de UI ---
     scan_button.disabled = True
@@ -262,6 +427,12 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
 
     loading_row.visible = False
 
+    # Crear actividades para enlaces sin puertos abiertos
+    create_activities_for_no_ports(scan_results, results_column, page)
+
+    # Exportar resultados a Excel
+    excel_path = export_scan_results_to_excel(scan_results)
+
     # Mensaje final
     results_column.controls.append(
         ft.Row(
@@ -272,6 +443,28 @@ def scan_urls_handler(e, results_column: ft.Column, loading_row: ft.Row, scan_bu
             alignment=ft.MainAxisAlignment.CENTER
         )
     )
+    
+    # Agregar mensaje con la ruta del archivo Excel
+    if excel_path:
+        # Habilitar el botón de descarga
+        if download_button:
+            download_button.disabled = False
+            download_button.visible = True
+        
+        results_column.controls.append(
+            ft.Container(
+                content=ft.Column([
+                    ft.Icon(name=ft.Icons.FILE_DOWNLOAD, size=24, color=ft.Colors.GREEN_700),
+                    ft.Text("Reporte exportado:", weight="bold", color=ft.Colors.GREEN_700, size=12),
+                    ft.Text(excel_path, size=10, color=ft.Colors.BLUE_600)
+                ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                padding=12,
+                margin=10,
+                bgcolor=ft.Colors.GREEN_50,
+                border_radius=8,
+                width=500
+            )
+        )
     
     scan_button.disabled = False
     scan_button.bgcolor = ft.Colors.INDIGO_700

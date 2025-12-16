@@ -1,6 +1,7 @@
 import flet as ft
 from components.inner_header import InnerHeader
 from components.actividades import add_actividad, update_actividad, delete_actividad, toggle_completed_actividad, _update_actividades_container, _create_activity_card
+from services.api_service import ApiService
 
 class Actividades(ft.Container):
     """
@@ -72,6 +73,9 @@ class Actividades(ft.Container):
         
         # Agregar el card de añadir al inicio
         _update_actividades_container(self)
+        
+        # Cargar actividades desde la API
+        self.load_actividades_from_api()
     
     def set_actividades_editar_view(self, actividades_editar_view):
         """
@@ -123,3 +127,34 @@ class Actividades(ft.Container):
     def _create_activity_card(self, actividad_data):
         """Crea una tarjeta de actividad basada en los datos proporcionados."""
         return _create_activity_card(self, actividad_data)
+    
+    def load_actividades_from_api(self):
+        """
+        Carga las actividades desde la API y las muestra en la vista.
+        """
+        try:
+            actividades = ApiService.get_activities()
+            if actividades:
+                # Limpiar la lista actual
+                self.actividades.clear()
+                
+                # Agregar cada actividad
+                for actividad in actividades:
+                    self.actividades.append(actividad)
+                
+                # Actualizar la vista
+                _update_actividades_container(self)
+                
+                print(f"Se cargaron {len(actividades)} actividades desde la API")
+            else:
+                print("No se pudieron obtener las actividades desde la API")
+        except Exception as e:
+            print(f"Error al cargar actividades desde la API: {e}")
+    
+    def refresh_actividades_from_api(self):
+        """
+        Refresca las actividades desde la API.
+        """
+        self.load_actividades_from_api()
+        if self.flet_page:
+            self.flet_page.update()

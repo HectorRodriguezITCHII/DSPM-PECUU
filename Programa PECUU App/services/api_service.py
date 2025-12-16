@@ -270,3 +270,233 @@ class ApiService:
                 "message": f"Error inesperado: {str(e)}",
                 "data": None
             }
+    
+    # ========== MÉTODOS PARA ACTIVIDADES ==========
+    
+    @staticmethod
+    def get_activities() -> Optional[List[Dict]]:
+        """
+        Obtiene la lista de actividades desde la API.
+        
+        Returns:
+            Lista de diccionarios con los datos de las actividades.
+            Retorna None si hay error en la petición.
+        """
+        try:
+            url = f"{ApiService.BASE_URL}/activities.json"
+            response = requests.get(url, timeout=ApiService.TIMEOUT, verify=False)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            # Transformar los datos de la API al formato esperado
+            actividades = []
+            if isinstance(data, list):
+                actividades = data
+            elif isinstance(data, dict) and "activities" in data:
+                actividades = data["activities"]
+            elif isinstance(data, dict) and "data" in data:
+                actividades = data["data"]
+            
+            # Mapear los campos de la API a los campos esperados
+            actividades_formateadas = []
+            for actividad in actividades:
+                actividad_formateada = {
+                    "id": actividad.get("id"),
+                    "titulo": actividad.get("title", ""),
+                    "descripcion": actividad.get("description", ""),
+                    "usuario": actividad.get("user", {}).get("name", ""),
+                    "fecha": actividad.get("date", ""),
+                    "activa": actividad.get("active", True),
+                    "_api_id": actividad.get("id")  # ID para referencia interna
+                }
+                actividades_formateadas.append(actividad_formateada)
+            
+            return actividades_formateadas
+            
+        except requests.exceptions.RequestException as e:
+            print(f"Error al conectar con la API de actividades: {e}")
+            return None
+        except json.JSONDecodeError as e:
+            print(f"Error al decodificar JSON de actividades: {e}")
+            return None
+        except Exception as e:
+            print(f"Error inesperado al obtener actividades: {e}")
+            return None
+    
+    @staticmethod
+    def create_activity(actividad_data: Dict) -> Dict:
+        """
+        Crea una nueva actividad en la API.
+        
+        Args:
+            actividad_data: Diccionario con los datos de la actividad
+                Campos esperados:
+                - titulo: Título de la actividad (requerido)
+                - descripcion: Descripción (opcional)
+                - usuario: Usuario responsable (opcional)
+                - fecha: Fecha de la actividad (opcional)
+                - link_id: ID del enlace (opcional)
+                - user_id: ID del usuario (opcional)
+        
+        Returns:
+            Diccionario con el resultado de la operación
+        """
+        try:
+            # Preparar datos para la API
+            payload = {
+                "title": actividad_data.get("titulo"),
+                "description": actividad_data.get("descripcion", ""),
+                "date": actividad_data.get("fecha", ""),
+            }
+            
+            # Agregar campos opcionales
+            if actividad_data.get("link_id"):
+                payload["link_id"] = actividad_data.get("link_id")
+            if actividad_data.get("user_id"):
+                payload["user_id"] = actividad_data.get("user_id")
+            
+            print(f"[DEBUG] Payload para crear actividad: {json.dumps(payload, indent=2)}")
+            
+            url = f"{ApiService.BASE_URL}/activities"
+            response = requests.post(
+                url,
+                json=payload,
+                timeout=ApiService.TIMEOUT,
+                verify=False
+            )
+            
+            print(f"[DEBUG] Status Code: {response.status_code}")
+            response.raise_for_status()
+            
+            result_data = response.json()
+            
+            return {
+                "success": True,
+                "message": "Actividad creada exitosamente",
+                "data": result_data
+            }
+            
+        except requests.exceptions.RequestException as e:
+            error_msg = str(e)
+            print(f"Error al crear actividad: {error_msg}")
+            
+            return {
+                "success": False,
+                "message": f"Error de conexión: {error_msg}",
+                "data": None
+            }
+            
+        except Exception as e:
+            print(f"Error inesperado al crear actividad: {e}")
+            
+            return {
+                "success": False,
+                "message": f"Error: {str(e)}",
+                "data": None
+            }
+    
+    @staticmethod
+    def update_activity(activity_id: int, actividad_data: Dict) -> Dict:
+        """
+        Actualiza una actividad existente en la API.
+        
+        Args:
+            activity_id: ID de la actividad a actualizar
+            actividad_data: Diccionario con los datos actualizados
+        
+        Returns:
+            Diccionario con el resultado de la operación
+        """
+        try:
+            payload = {
+                "title": actividad_data.get("titulo"),
+                "description": actividad_data.get("descripcion", ""),
+                "date": actividad_data.get("fecha", ""),
+            }
+            
+            print(f"[DEBUG] Actualizando actividad {activity_id}: {json.dumps(payload, indent=2)}")
+            
+            url = f"{ApiService.BASE_URL}/activities/{activity_id}"
+            response = requests.put(
+                url,
+                json=payload,
+                timeout=ApiService.TIMEOUT,
+                verify=False
+            )
+            
+            print(f"[DEBUG] Status Code: {response.status_code}")
+            response.raise_for_status()
+            
+            result_data = response.json()
+            
+            return {
+                "success": True,
+                "message": "Actividad actualizada exitosamente",
+                "data": result_data
+            }
+            
+        except requests.exceptions.HTTPError as e:
+            error_msg = f"Error HTTP {e.response.status_code}"
+            print(f"[WARNING] Error al actualizar actividad: {error_msg}")
+            
+            return {
+                "success": False,
+                "message": error_msg,
+                "data": None
+            }
+        except Exception as e:
+            print(f"Error inesperado al actualizar actividad: {e}")
+            
+            return {
+                "success": False,
+                "message": f"Error: {str(e)}",
+                "data": None
+            }
+    
+    @staticmethod
+    def delete_activity(activity_id: int) -> Dict:
+        """
+        Elimina una actividad de la API.
+        
+        Args:
+            activity_id: ID de la actividad a eliminar
+        
+        Returns:
+            Diccionario con el resultado de la operación
+        """
+        try:
+            url = f"{ApiService.BASE_URL}/activities/{activity_id}"
+            response = requests.delete(
+                url,
+                timeout=ApiService.TIMEOUT,
+                verify=False
+            )
+            
+            print(f"[DEBUG] Status Code: {response.status_code}")
+            response.raise_for_status()
+            
+            return {
+                "success": True,
+                "message": "Actividad eliminada exitosamente",
+                "data": None
+            }
+            
+        except requests.exceptions.HTTPError as e:
+            error_msg = f"Error HTTP {e.response.status_code}"
+            print(f"Error al eliminar actividad: {error_msg}")
+            
+            return {
+                "success": False,
+                "message": error_msg,
+                "data": None
+            }
+        except Exception as e:
+            print(f"Error inesperado al eliminar actividad: {e}")
+            
+            return {
+                "success": False,
+                "message": f"Error: {str(e)}",
+                "data": None
+            }
+

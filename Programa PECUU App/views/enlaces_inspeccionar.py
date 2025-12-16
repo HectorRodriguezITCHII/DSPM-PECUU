@@ -32,6 +32,8 @@ class EnlacesInspeccionar(ft.Container):
         self.bgcolor = ft.Colors.GREY_50
         self.border_radius = 10
 
+        
+
         self.name_textfield = ft.TextField(
             label="Nombre del Enlace",
             width=400,
@@ -121,6 +123,47 @@ class EnlacesInspeccionar(ft.Container):
             disabled=True,
             color=ft.Colors.GREY_700
         )
+
+        self.user1_textfield = ft.TextField(
+            label="Usuario 1 (Admin)",
+            width=400,
+            height=50,
+            text_style=ft.TextStyle(size=16),
+            value=self.enlace_data.get("user1", ""),
+            disabled=True,
+            color=ft.Colors.GREY_700
+        )
+
+        self.user1_password_textfield = ft.TextField(
+            label="Contraseña 1 (Admin)",
+            width=400,
+            height=50,
+            text_style=ft.TextStyle(size=16),
+            value=self.enlace_data.get("user1_password", ""),
+            disabled=True,
+            color=ft.Colors.GREY_700
+        )
+
+        self.user2_textfield = ft.TextField(
+            label="Usuario 2 (DSPM)",
+            width=400,
+            height=50,
+            text_style=ft.TextStyle(size=16),
+            value=self.enlace_data.get("user2", ""),
+            disabled=True,
+            color=ft.Colors.GREY_700
+        )
+
+        self.user2_password_textfield = ft.TextField(
+            label="Contraseña 2 (DSPM)",
+            width=400,
+            height=50,
+            text_style=ft.TextStyle(size=16),
+            value=self.enlace_data.get("user2_password", ""),
+            disabled=True,
+            color=ft.Colors.GREY_700
+        )
+
         # store inner header so we can update its title on save
         self.inner_header = InnerHeader(f"{self.enlace_data.get('nombre', 'ENLACE')}", icon=ft.Icons.VISIBILITY)
 
@@ -155,77 +198,161 @@ class EnlacesInspeccionar(ft.Container):
                     alignment=ft.MainAxisAlignment.START,
                     width=700,
                     controls=[
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Nombre:", style=ft.TextStyle(size=16)),
-                                self.name_textfield
-                            ]
+                        ft.Container(
+                            padding=ft.padding.all(15),
+                            width=700,
+                            content=ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                alignment=ft.MainAxisAlignment.START,
+                                scroll=ft.ScrollMode.AUTO,
+                                controls=[
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Nombre:", style=ft.TextStyle(size=16)),
+                                            self.name_textfield
+                                        ]
+                                    ),
+                                ]
+                            )
+                        ),
+                        ft.Container(
+                            bgcolor=ft.Colors.GREY_100,
+                            padding=ft.padding.all(15),
+                            width=700,
+                            border_radius=5,
+                            content=ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                alignment=ft.MainAxisAlignment.START,
+                                scroll=ft.ScrollMode.AUTO,
+                                controls=[
+                                    ft.Text("RED:", style=ft.TextStyle(size=20, weight="bold", color=ft.Colors.INDIGO_600)),
+                                    ft.Divider(thickness=1, color=ft.Colors.GREY_300),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("SSID:", style=ft.TextStyle(size=16)),
+                                            self.wifi_name_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Contraseña:", style=ft.TextStyle(size=16)),
+                                            self.wifi_password_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Contraseña del Modem:", style=ft.TextStyle(size=16)),
+                                            self.modem_password_textfield
+                                        ]
+                                    ),
+                                ]
+                            )
+                        ),
+                        ft.Container(
+                            bgcolor=ft.Colors.GREY_100,
+                            padding=ft.padding.all(15),
+                            width=700,
+                            border_radius=5,
+                            content=ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                alignment=ft.MainAxisAlignment.START,
+                                scroll=ft.ScrollMode.AUTO,
+                                controls=[
+                                    ft.Text("DVR:", style=ft.TextStyle(size=20, weight="bold", color=ft.Colors.INDIGO_600)),
+                                    ft.Divider(thickness=1, color=ft.Colors.GREY_300),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("IP del DVR:", style=ft.TextStyle(size=16)),
+                                            self.dvr_ip_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("MAC del DVR:", style=ft.TextStyle(size=16)),
+                                            self.dvr_mac_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Usuario 1 (Admin):", style=ft.TextStyle(size=16)),
+                                            self.user1_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Contraseña 1 (Admin)", style=ft.TextStyle(size=16)),
+                                            self.user1_password_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Usuario 2 (DSPM):", style=ft.TextStyle(size=16)),
+                                            self.user2_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Contraseña 2 (DSPM):", style=ft.TextStyle(size=16)),
+                                            self.user2_password_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Puerto HTTP:", style=ft.TextStyle(size=16)),
+                                            self.http_port_textfield
+                                        ]
+                                    ),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("Puerto RTSP:", style=ft.TextStyle(size=16)),
+                                            self.rtsp_port_textfield
+                                        ]
+                                    ),   
+                                ]
+                            ),
+                        ),
+                        ft.Container(
+                            bgcolor=ft.Colors.GREY_100,
+                            padding=ft.padding.all(15),
+                            width=700,
+                            border_radius=5,
+                            content=ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                alignment=ft.MainAxisAlignment.START,
+                                scroll=ft.ScrollMode.AUTO,
+                                controls=[
+                                    ft.Text("PECUU:", style=ft.TextStyle(size=20, weight="bold", color=ft.Colors.INDIGO_600)),
+                                    ft.Divider(thickness=1, color=ft.Colors.GREY_300),
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text("DDNS:", style=ft.TextStyle(size=16)),
+                                            self.ddns_textfield
+                                        ]
+                                    ),
+                                ]
+                            )
                         ),
                         ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=20,
                             controls=[
-                                ft.Text("DDNS:", style=ft.TextStyle(size=16)),
-                                self.ddns_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Puerto HTTP:", style=ft.TextStyle(size=16)),
-                                self.http_port_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Puerto RTSP:", style=ft.TextStyle(size=16)),
-                                self.rtsp_port_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Nombre WiFi:", style=ft.TextStyle(size=16)),
-                                self.wifi_name_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Contraseña WiFi:", style=ft.TextStyle(size=16)),
-                                self.wifi_password_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("Contraseña Modem:", style=ft.TextStyle(size=16)),
-                                self.modem_password_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("IP del DVR:", style=ft.TextStyle(size=16)),
-                                self.dvr_ip_textfield
-                            ]
-                        ),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                            controls=[
-                                ft.Text("MAC del DVR:", style=ft.TextStyle(size=16)),
-                                self.dvr_mac_textfield
+                                self.edit_button,
+                                self.cancel_button
                             ]
                         )
-                    ]
-                ),
-                ft.Row(
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    spacing=20,
-                    controls=[
-                        self.edit_button,
-                        self.cancel_button
                     ]
                 )
             ]
@@ -240,7 +367,8 @@ class EnlacesInspeccionar(ft.Container):
             for fld in [
                 self.name_textfield, self.ddns_textfield, self.http_port_textfield,
                 self.rtsp_port_textfield, self.wifi_name_textfield, self.wifi_password_textfield,
-                self.modem_password_textfield, self.dvr_ip_textfield, self.dvr_mac_textfield
+                self.modem_password_textfield, self.dvr_ip_textfield, self.dvr_mac_textfield,
+                self.user1_textfield, self.user1_password_textfield, self.user2_textfield, self.user2_password_textfield
             ]:
                 fld.disabled = False
             try:
@@ -261,6 +389,10 @@ class EnlacesInspeccionar(ft.Container):
                 'modem_password': self.modem_password_textfield.value,
                 'dvr_ip': self.dvr_ip_textfield.value,
                 'dvr_mac': self.dvr_mac_textfield.value,
+                'user1': self.user1_textfield.value,
+                'user1_password': self.user1_password_textfield.value,
+                'user2': self.user2_textfield.value,
+                'user2_password': self.user2_password_textfield.value,
             }
             original_name = self.enlace_data.get('nombre')
             source = getattr(self, '_source_view', None)
@@ -292,7 +424,8 @@ class EnlacesInspeccionar(ft.Container):
             for fld in [
                 self.name_textfield, self.ddns_textfield, self.http_port_textfield,
                 self.rtsp_port_textfield, self.wifi_name_textfield, self.wifi_password_textfield,
-                self.modem_password_textfield, self.dvr_ip_textfield, self.dvr_mac_textfield
+                self.modem_password_textfield, self.dvr_ip_textfield, self.dvr_mac_textfield,
+                self.user1_textfield, self.user1_password_textfield, self.user2_textfield, self.user2_password_textfield
             ]:
                 fld.disabled = True
             # Show snackbar confirming successful save

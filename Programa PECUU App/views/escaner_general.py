@@ -1,6 +1,8 @@
 import flet as ft
-from components.escaner_general import scan_urls_handler 
+from components.escaner_general import scan_urls_handler, last_excel_file
 from components.inner_header import InnerHeader
+import webbrowser
+import os
 
 class EscanerGeneral(ft.Container):
     """
@@ -51,6 +53,19 @@ class EscanerGeneral(ft.Container):
             style=ft.ButtonStyle(text_style=ft.TextStyle(size=22, weight="bold")),
         )
 
+        # --- Botón de Abrir Excel ---
+        self.download_button = ft.FilledButton(
+            text="ABRIR EXCEL",
+            width=200,
+            height=40,
+            bgcolor=ft.Colors.GREEN_600,
+            color=ft.Colors.WHITE,
+            icon=ft.Icons.OPEN_IN_BROWSER,
+            style=ft.ButtonStyle(text_style=ft.TextStyle(size=18, weight="bold"), icon_size=26),
+            disabled=True,
+            visible=False
+        )
+
         # --- Área de Resultados ---
         # Columna donde se insertarán dinámicamente los ft.Card con los resultados
         self.results_column = ft.Column(
@@ -74,6 +89,7 @@ class EscanerGeneral(ft.Container):
             controls=[
                 InnerHeader("ESCANEO GENERAL", icon=ft.Icons.WIFI_TETHERING),
                 self.scan_button,
+                self.download_button,
                 self.results_column,
                 self.loading_row
             ]
@@ -88,4 +104,28 @@ class EscanerGeneral(ft.Container):
             self.loading_row,
             self.scan_button,
             page,
+            self.download_button
         )
+        
+        # Evento del botón de descarga
+        self.download_button.on_click = self.download_excel
+    
+    def download_excel(self, e):
+        """
+        Abre el archivo Excel generado en el explorador de archivos
+        o lo descarga dependiendo del sistema operativo.
+        """
+        import components.escaner_general as scanner_module
+        
+        if scanner_module.last_excel_file and os.path.exists(scanner_module.last_excel_file):
+            try:
+                # Abre el explorador de archivos con el archivo seleccionado
+                if os.name == 'nt':  # Windows
+                    os.startfile(scanner_module.last_excel_file)
+                else:  # macOS o Linux
+                    os.system(f'open "{scanner_module.last_excel_file}"')
+                print(f"[INFO] Abriendo archivo: {scanner_module.last_excel_file}")
+            except Exception as ex:
+                print(f"[ERROR] No se pudo abrir el archivo: {str(ex)}")
+        else:
+            print("[ERROR] No hay archivo Excel disponible para descargar")

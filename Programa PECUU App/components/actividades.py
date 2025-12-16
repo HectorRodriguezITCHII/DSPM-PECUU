@@ -1,4 +1,5 @@
 import flet as ft
+from services.api_service import ApiService
 
 def add_actividad(self, actividad_data):
     """
@@ -26,14 +27,58 @@ def update_actividad(self, actividad_index, actividad_data):
 
 def delete_actividad(self, actividad_index):
     """
-    Elimina una actividad de la lista y actualiza la vista.
+    Elimina una actividad de la lista y de la API, y actualiza la vista.
     
     :param actividad_index: Índice de la actividad a eliminar
     """
     if 0 <= actividad_index < len(self.actividades):
-        self.actividades.pop(actividad_index)
-        _update_actividades_container(self)
-        self.flet_page.update()
+        actividad = self.actividades[actividad_index]
+        actividad_id = actividad.get("_api_id") or actividad.get("id")
+        
+        # Intentar eliminar de la API si tiene ID
+        if actividad_id:
+            print(f"Eliminando actividad de la API: {actividad_id}")
+            api_result = ApiService.delete_activity(actividad_id)
+            
+            if api_result["success"]:
+                print(f"Actividad eliminada de la API: {api_result['message']}")
+                # Eliminar de la lista local
+                self.actividades.pop(actividad_index)
+                _update_actividades_container(self)
+                if hasattr(self, 'flet_page'):
+                    # Mostrar confirmación
+                    try:
+                        snackbar = ft.SnackBar(
+                            ft.Text("✓ Actividad eliminada correctamente", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.GREEN_700,
+                            duration=3000
+                        )
+                        self.flet_page.overlay.append(snackbar)
+                        snackbar.open = True
+                    except Exception:
+                        pass
+                    self.flet_page.update()
+            else:
+                # Error al eliminar de la API
+                print(f"Error al eliminar de la API: {api_result['message']}")
+                if hasattr(self, 'flet_page'):
+                    try:
+                        snackbar = ft.SnackBar(
+                            ft.Text(f"Error: {api_result['message']}", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.RED_700,
+                            duration=5000
+                        )
+                        self.flet_page.overlay.append(snackbar)
+                        snackbar.open = True
+                        self.flet_page.update()
+                    except Exception:
+                        pass
+        else:
+            # No tiene ID (actividad local), solo eliminar del local
+            self.actividades.pop(actividad_index)
+            _update_actividades_container(self)
+            if hasattr(self, 'flet_page'):
+                self.flet_page.update()
 
 def toggle_completed_actividad(self, actividad_index):
     """
